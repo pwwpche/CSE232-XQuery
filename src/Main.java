@@ -11,7 +11,7 @@ import org.w3c.dom.ls.LSSerializer;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        XQueryLangLexer lexer = new XQueryLangLexer(new ANTLRFileStream("/Users/liuche/IdeaProjects/XQuery/playQuery.txt"));
+        XQueryLangLexer lexer = new XQueryLangLexer(new ANTLRFileStream("/Users/liuche/IdeaProjects/XQuery/xqueries.txt"));
         XQueryLangParser parser = new XQueryLangParser(new CommonTokenStream(lexer));
         XQueryLangParser.StatementContext statement = parser.statement();
         XQueryVisitor visitor = new XQueryVisitor();

@@ -38,8 +38,17 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
 
             //Visit next node
-
-            getChildren(prev, next, ctx.LSLASH().size());
+            if(ctx.LSLASH().size() == 1){ //Immediate children
+                // Only visit immediate children
+                next.add(doc.getDocumentElement());
+            }else{
+                NodeList nodes = doc.getElementsByTagName("*");
+                for(int i = 0 ; i < nodes.getLength() ; i++){
+                    if(nodes.item(i).getNodeType() == Node.ELEMENT_NODE){
+                        next.add((Element) nodes.item(i));
+                    }
+                }
+            }
 
             results = new Value(next);
             this.visit(ctx.rp());
@@ -196,6 +205,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             }
         }
     }
+
+
+
     @Override
     public Value visitFilter_rp(XQueryLangParser.Filter_rpContext ctx) {
         return super.visitFilter_rp(ctx);
