@@ -49,6 +49,12 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
                     }
                 }
             }
+            //TODO: What if we have doc("...")/text()?
+
+//            if(ctx.rp().getText().equals("text()")){
+//                next.clear();
+//                next.add(doc);
+//            }
 
             results = new Value(next);
             this.visit(ctx.rp());
@@ -178,6 +184,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         List<Element> prev = results.asListElem();
         List<Element> next = new ArrayList<>();
         getChildren(prev, next, ctx.LSLASH().size());
+        if(ctx.rp(1).getText().equals("text()")){
+            next = prev;
+        }
         results = new Value(next);
         this.visit(ctx.rp(1));
         return results;
@@ -343,6 +352,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         List<Element> next = new ArrayList<>();
 
         getChildren(prev, next, ctx.LSLASH().size());
+        if(ctx.rp().getText().equals("text()")){
+            next = prev;
+        }
         results = new Value(next);
         this.visit(ctx.rp());
         return results;
