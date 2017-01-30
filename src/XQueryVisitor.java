@@ -64,12 +64,18 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_dotdot(XQueryLangParser.Rp_dotdotContext ctx) {
-        List<Element> prev = results.asListElem();
-        Set<Element> next = new HashSet<>();
-        for(Element element : prev){
-            next.add((Element) element.getParentNode());
+        Value prev = results;
+        Set<Element> nextSet = new HashSet<>();
+
+        for(Element element : prev.asListElem()){
+            results = prev;
+            List<Element> prevList = new ArrayList<>();
+            List<Element> nextList = new ArrayList<>();
+            prevList.add((Element) element.getParentNode().getParentNode());
+            getChildren(prevList, nextList, 1);
+            nextSet.addAll(nextList);
         }
-        results = new Value(new ArrayList<>(next));
+        results = new Value(new ArrayList<>(nextSet));
         return results;
 
     }
@@ -87,9 +93,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     @Override
     public Value visitRp_comma(XQueryLangParser.Rp_commaContext ctx) {
         Value prevResult = results;
-        Value rp1 = this.visit(ctx.rp(1));
+        Value rp1 = this.visit(ctx.rp(0));
         results = prevResult;
-        Value rp2 = this.visit(ctx.rp(2));
+        Value rp2 = this.visit(ctx.rp(1));
 
         Set<Element> resSet = new HashSet<>();
 
@@ -217,22 +223,50 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitFilter_rp(XQueryLangParser.Filter_rpContext ctx) {
-        return super.visitFilter_rp(ctx);
+        this.visit(ctx.rp());
+        results = new Value(results.asListElem().size() != 0);
+        return results;
     }
 
     @Override
     public Value visitFilter_eq(XQueryLangParser.Filter_eqContext ctx) {
-        return super.visitFilter_eq(ctx);
+        Value prev = results;
+        Set<Element> res1 = new HashSet<>(this.visit(ctx.rp(0)).asListElem());
+        results = prev;
+        Set<Element> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListElem());
+        res1.retainAll(res2);
+        results = new Value(res1.size() > 0);
+        return results;
     }
 
     @Override
     public Value visitFilter_andOr(XQueryLangParser.Filter_andOrContext ctx) {
-        return super.visitFilter_andOr(ctx);
+        Value prev = results;
+        boolean left = this.visit(ctx.filter(0)).asBoolean();
+        results = prev;
+        boolean right = this.visit(ctx.filter(1)).asBoolean();
+        if(ctx.op.getType() == XQueryLangParser.AND){
+            results = new Value(left && right);
+        }else{
+            results = new Value(left || right);
+        }
+        return results;
     }
 
     @Override
     public Value visitFilter_is(XQueryLangParser.Filter_isContext ctx) {
-        return super.visitFilter_is(ctx);
+        //TODO: What is the difference between `eq` and `is`?
+        Value prev = results;
+        Set<Element> res1 = new HashSet<>(this.visit(ctx.rp(0)).asListElem());
+        results = prev;
+        Set<Element> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListElem());
+        res1.retainAll(res2);
+        if(res1.size() > 0){
+            results = new Value(true);
+        }else{
+            results = new Value(false);
+        }
+        return results;
     }
 
     @Override
@@ -242,7 +276,8 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitFilter_not(XQueryLangParser.Filter_notContext ctx) {
-        return super.visitFilter_not(ctx);
+        results = new Value(!(this.visit(ctx.filter()).asBoolean()));
+        return results;
     }
 
     @Override
