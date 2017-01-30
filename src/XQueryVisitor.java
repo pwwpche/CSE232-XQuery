@@ -80,20 +80,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_star(XQueryLangParser.Rp_starContext ctx) {
-        List<Element> prev = results.asListElem();
-        List<Element> next = new ArrayList<>();
-
-        for(Element element : prev){
-            NodeList nodeList = element.getElementsByTagName("*");
-            for(int i = 0 ; i < nodeList.getLength() ; i++){
-                Node node = nodeList.item(i);
-                if(node.getNodeType() == Node.ELEMENT_NODE){
-                    next.add((Element) node);
-                }
-            }
-        }
-
-        results = new Value(next);
         return results;
     }
 
@@ -108,12 +94,12 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value rp1 = this.visit(ctx.rp(1));
         results = prevResult;
         Value rp2 = this.visit(ctx.rp(2));
-        List<Element> res = rp1.asListElem();
+
         Set<Element> resSet = new HashSet<>();
 
-        //TODO: Do we have to perform set operations? Or just use bag operations?
         resSet.addAll(rp1.asListElem());
         resSet.addAll(rp2.asListElem());
+        List<Element> res = new ArrayList<>(resSet);
         results = new Value(res);
         return results;
     }
@@ -146,6 +132,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     @Override
     public Value visitRp_filter(XQueryLangParser.Rp_filterContext ctx) {
         this.visit(ctx.rp());
+        List<Element> prev = results.asListElem();
+        List<Element> next = new ArrayList<>();
+
         this.visit(ctx.filter());
         return results;
     }
@@ -193,6 +182,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     }
 
     private void getChildren(List<Element> prev, List<Element> next, int slashes){
+        Set<Element> nextSet = new HashSet<>();
         for(Element element : prev){
             if(slashes == 1){ //Immediate children
                 // Only visit immediate children
@@ -200,7 +190,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
                 while( childNode !=null ){
                     if (childNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element childElement = (Element) childNode;
-                        next.add(childElement);
+                        nextSet.add(childElement);
                     }
                     childNode = childNode.getNextSibling();
                 }
@@ -208,11 +198,12 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
                 NodeList nodes = element.getElementsByTagName("*");
                 for(int i = 0 ; i < nodes.getLength() ; i++){
                     if(nodes.item(i).getNodeType() == Node.ELEMENT_NODE){
-                        next.add((Element) nodes.item(i));
+                        nextSet.add((Element) nodes.item(i));
                     }
                 }
             }
         }
+        next.addAll(nextSet);
     }
 
 
@@ -277,8 +268,8 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         if(!tagName.equals(ctx.tagName(1).getText().replace("/", ""))){
             throw new RuntimeException("Invalid tag name");
         }
-        Element newElement = createElement(tagName);
         Value newVal = this.visit(ctx.statement());
+        Element newElement = createElement(tagName);
         if(newVal.isListElem()){
             List<Element> childs = newVal.asListElem();
             for(Element element : childs){
@@ -315,9 +306,10 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value res1 = this.visit(ctx.statement(0));
         results = prevResult;
         Value res2 = this.visit(ctx.statement(1));
-        List<Element> next = res1.asListElem();
-        next.addAll(res2.asListElem());
-        results = new Value(next);
+        List<Element> res = new ArrayList<>();
+        res.addAll(res1.asListElem());
+        res.addAll(res2.asListElem());
+        results = new Value(res);
         return results;
 
     }
@@ -373,6 +365,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         addedVars.addAll(this.getVariables(ctx.letClause()));
         List<Element> finalResult = new ArrayList<>();
         this.forStatementDFS(ctx.forClause(), 0, finalResult);
+
         results = new Value(finalResult);
         addedVars.forEach(mem::remove);
         return results;
