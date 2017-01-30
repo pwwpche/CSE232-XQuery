@@ -127,7 +127,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_filter(XQueryLangParser.Rp_filterContext ctx) {
-        assert results.asListElem().size() == new HashSet<Element>(results.asListElem()).size();
+        assert results.asListElem().size() == new HashSet<>(results.asListElem()).size();
 
         this.visit(ctx.rp());
         List<Element> prev = results.asListElem();
@@ -388,7 +388,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     @Override
     public Value visitForClause(XQueryLangParser.ForClauseContext ctx) {
         // According to what we do in forStatement, this part of code will never be reached.
-        assert(false);
+        assert false;
         results = Value.VOID;
         return results;
     }
@@ -417,7 +417,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             String variable = ctx.variable(varIdx).getText();
             Value value = this.visit(ctx.statement(varIdx));
             for(Element element : value.asListElem()){
-                List elemList = new ArrayList();
+                List<Element> elemList = new ArrayList<>();
                 elemList.add(element);
                 mem.put(variable, new Value(elemList));
                 forStatementDFS(ctx, varIdx + 1, finalResult);
