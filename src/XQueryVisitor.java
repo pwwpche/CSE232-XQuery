@@ -65,11 +65,11 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     @Override
     public Value visitRp_dotdot(XQueryLangParser.Rp_dotdotContext ctx) {
         List<Element> prev = results.asListElem();
-        List<Element> next = new ArrayList<>();
+        Set<Element> next = new HashSet<>();
         for(Element element : prev){
             next.add((Element) element.getParentNode());
         }
-        results = new Value(next);
+        results = new Value(new ArrayList<>(next));
         return results;
 
     }
