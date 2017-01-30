@@ -18,7 +18,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     private final Map<String, Value> mem = new HashMap<>();
     private Value results = Value.VOID;
-    Document doc;
+    private Document doc;
     @Override
     public Value visitAp(XQueryLangParser.ApContext ctx) {
 
@@ -29,13 +29,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             DocumentBuilder db = dbf.newDocumentBuilder();
 
             //parse using builder to get DOM representation of the XML file
-            List<Element> prev = new ArrayList<>();
             List<Element> next = new ArrayList<>();
             doc = db.parse(fileName);
             doc.getDocumentElement().normalize();
-
-            prev.add(doc.getDocumentElement());
-
 
             //Visit next node
             if(ctx.LSLASH().size() == 1){ //Immediate children
@@ -131,11 +127,22 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_filter(XQueryLangParser.Rp_filterContext ctx) {
+        assert results.asListElem().size() == new HashSet<Element>(results.asListElem()).size();
+
         this.visit(ctx.rp());
         List<Element> prev = results.asListElem();
         List<Element> next = new ArrayList<>();
-
-        this.visit(ctx.filter());
+        for(Element element : prev){
+            List<Element> newVal = new ArrayList<>();
+            newVal.add(element);
+            results = new Value(newVal);
+            Value ret = this.visit(ctx.filter());
+            assert ret.isBoolean();
+            if(ret.asBoolean()){
+                next.add(element);
+            }
+        }
+        results = new Value(next);
         return results;
     }
 
