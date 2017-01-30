@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE email [
+        <!ELEMENT email (von,zu,prior)>
+        <!ELEMENT von (#PCDATA)>
+        <!ELEMENT zu ( titel* )>
+        <!ELEMENT titel (tex)>
+        <!ELEMENT tex (#PCDATA)>
+        <!ELEMENT prior EMPTY>
+        <!ATTLIST prior type CDATA #REQUIRED >
+        ]>
+<email>
+    <von>test@test.com</von>
+    <zu>
+        <titel>
+            <tex>Dear 1</tex>
+        </titel>
+        <titel>
+            <tex>Dear 2....;-).</tex>
+        </titel>
+        <titel>
+            <tex>Dear 3</tex>
+        </titel>
+    </zu>
+
+
+    <prior type="schnell"/>
+</email>
+
