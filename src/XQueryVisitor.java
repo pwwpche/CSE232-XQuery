@@ -18,7 +18,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     private final Map<String, Value> mem = new HashMap<>();
     private Value results = Value.VOID;
-    private Document doc;
+    private Document newDoc;
     @Override
     public Value visitAp(XQueryLangParser.ApContext ctx) {
 
@@ -30,7 +30,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
             //parse using builder to get DOM representation of the XML file
             List<Element> next = new ArrayList<>();
-            doc = db.parse(fileName);
+            Document doc = db.parse(fileName);
             doc.getDocumentElement().normalize();
 
             //Visit next node
@@ -438,9 +438,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
 
     private void forStatementDFS(XQueryLangParser.ForClauseContext ctx, int varIdx, List<Element> finalResult){
-        // TODO: Perhaps we need to perform a DFS on the values of each variables.
         // Treat this as a tree.
-
         if(varIdx >= ctx.variable().size()){     //All the variables have already been set, do the processing work.
             XQueryLangParser.ForStatementContext parentCtx = (XQueryLangParser.ForStatementContext)ctx.getParent();
             if(parentCtx.letClause() != null){
@@ -534,11 +532,37 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitCond_some(XQueryLangParser.Cond_someContext ctx) {
-        //TODO: THIS IS NOT IMPLEMENTED.
+        results = new Value(someClauseDFS(ctx, 0));
+
         List<String> addedVars = getVariables(ctx);
         addedVars.forEach(mem::remove);
-        results = new Value(true);
         return results;
+    }
+
+
+    private boolean someClauseDFS(XQueryLangParser.Cond_someContext ctx, int varIdx){
+        // Treat this as a tree.
+
+        if(varIdx >= ctx.variable().size()){     //All the variables have already been set, do the processing work.
+            results = Value.VOID;
+            Value val = this.visit(ctx.condition());
+            assert val.isBoolean();
+            return val.asBoolean();
+        }else{                                  // Set up variables before processing.
+            String variable = ctx.variable(varIdx).getText();
+            Value value = this.visit(ctx.statement(varIdx));
+            for(Element element : value.asListElem()){
+                List<Element> elemList = new ArrayList<>();
+                elemList.add(element);
+                mem.put(variable, new Value(elemList));
+                boolean res = someClauseDFS(ctx, varIdx + 1);
+                if(res){
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 
     @Override
@@ -674,13 +698,13 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     }
 
     private Element createElement(String name){
-        if(doc != null){
-            return doc.createElement(name);
+        if(newDoc != null){
+            return newDoc.createElement(name);
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
-            Document doc = dbf.newDocumentBuilder().newDocument();
-            return doc.createElement(name);
+            newDoc = dbf.newDocumentBuilder().newDocument();
+            return newDoc.createElement(name);
         } catch (ParserConfigurationException ex) {
             return null;
         }
