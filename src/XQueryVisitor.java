@@ -117,7 +117,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     @Override
     public Value visitRp_text(XQueryLangParser.Rp_textContext ctx) {
         List<Element> prev = results.asListElem();
-        //TODO: DO WE NEED TO ADD ANOTHER TYPE TO VALUE?
         String res = "";
         for(Element element : prev){
             res += element.getTextContent();
@@ -412,7 +411,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitForStatement(XQueryLangParser.ForStatementContext ctx) {
-        //TODO : THIS IS NOT FINISHED.
         List<String> addedVars = this.getVariables(ctx.forClause());
         addedVars.addAll(this.getVariables(ctx.letClause()));
         List<Element> finalResult = new ArrayList<>();
@@ -538,8 +536,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     public Value visitCond_some(XQueryLangParser.Cond_someContext ctx) {
         //TODO: THIS IS NOT IMPLEMENTED.
         List<String> addedVars = getVariables(ctx);
-
-
         addedVars.forEach(mem::remove);
         results = new Value(true);
         return results;
