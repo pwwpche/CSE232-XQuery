@@ -69,10 +69,8 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
         for(Element element : prev.asListElem()){
             results = prev;
-            List<Element> prevList = new ArrayList<>();
             List<Element> nextList = new ArrayList<>();
-            prevList.add((Element) element.getParentNode().getParentNode());
-            getChildren(prevList, nextList, 1);
+            nextList.add((Element) element.getParentNode().getParentNode());
             nextSet.addAll(nextList);
         }
         results = new Value(new ArrayList<>(nextSet));
@@ -87,6 +85,16 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_dot(XQueryLangParser.Rp_dotContext ctx) {
+        Value prev = results;
+        Set<Element> nextSet = new HashSet<>();
+
+        for(Element element : prev.asListElem()){
+            results = prev;
+            List<Element> nextList = new ArrayList<>();
+            nextList.add((Element) element.getParentNode());
+            nextSet.addAll(nextList);
+        }
+        results = new Value(new ArrayList<>(nextSet));
         return results;
     }
 
@@ -139,8 +147,10 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         List<Element> prev = results.asListElem();
         List<Element> next = new ArrayList<>();
         for(Element element : prev){
+            List<Element> prevVal = new ArrayList<>();
+            prevVal.add(element);
             List<Element> newVal = new ArrayList<>();
-            newVal.add(element);
+            getChildren(prevVal, newVal, 1);
             results = new Value(newVal);
             Value ret = this.visit(ctx.filter());
             assert ret.isBoolean();

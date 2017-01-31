@@ -1,4 +1,5 @@
-<result>{
-for $a in doc("j_caesar.xml")//ACT[(./TITLE)==(./TITLE)]/*/SPEECH/../TITLE
+<result1>{
+for $a in doc("j_caesar.xml")//ACT[not(./TITLE)==(./TITLE)]/*/SPEECH/../TITLE
 return $a
 }
+</result1>
