@@ -70,8 +70,12 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         for(Element element : prev.asListElem()){
             results = prev;
             List<Element> nextList = new ArrayList<>();
-            nextList.add((Element) element.getParentNode().getParentNode());
-            nextSet.addAll(nextList);
+            try {
+                nextList.add((Element) element.getParentNode().getParentNode());
+                nextSet.addAll(nextList);
+            }catch(Exception e){
+                nextSet.add(element.getOwnerDocument().getDocumentElement());
+            }
         }
         results = new Value(new ArrayList<>(nextSet));
         return results;
@@ -91,8 +95,13 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         for(Element element : prev.asListElem()){
             results = prev;
             List<Element> nextList = new ArrayList<>();
-            nextList.add((Element) element.getParentNode());
-            nextSet.addAll(nextList);
+            try {
+                nextList.add((Element) element.getParentNode());
+                nextSet.addAll(nextList);
+            }catch(Exception e){
+                nextSet.add(element.getOwnerDocument().getDocumentElement());
+            }
+
         }
         results = new Value(new ArrayList<>(nextSet));
         return results;
