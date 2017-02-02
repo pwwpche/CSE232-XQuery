@@ -216,7 +216,14 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         List<Element> next = new ArrayList<>();
         getChildren(prev, next, ctx.LSLASH().size());
         if(ctx.rp(1).getText().equals("text()")){
-            next = prev;
+            if (ctx.LSLASH().size()==1){
+                next = prev;
+            }
+            else{
+                for (Element element:prev){
+                    next.add(element);
+                }
+            }
         }
         results = new Value(next);
         this.visit(ctx.rp(1));
