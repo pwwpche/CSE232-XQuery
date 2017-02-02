@@ -84,7 +84,18 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_star(XQueryLangParser.Rp_starContext ctx) {
+        List<Element> prev = results.asListElem();
+        List<Element> next = new ArrayList<>();
+        for(Element element :prev){
+            Node childNode = element.getFirstChild();
+            while( childNode !=null ){
+                next.add((Element) childNode);
+                childNode =childNode.getNextSibling();
+            }
+        }
+        results = new Value(next);
         return results;
+
     }
 
     @Override
@@ -460,6 +471,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
                 if(!res.asBoolean()){
                     return ;
                 }
+
             }
             Value returnResult = this.visit(parentCtx.returnClause());
             finalResult.addAll(returnResult.asListElem());
