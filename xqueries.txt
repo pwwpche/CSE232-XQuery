@@ -1,4 +1,6 @@
-for $a in doc("/Users/xinyangli/IdeaProjects/CSE232XQuery/src/example.xml")//email[./zu/titel[./test1]/tex  is ./zu/titel[./test2]/tex ]/von
+<res>{
+for $a in doc("j_caesar.xml")//PERSONAE/PGROUP/PERSONA
 
 
 return $a
+}</res>
