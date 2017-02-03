@@ -1,0 +1,8 @@
+for $a in doc("j_caesar.xml")//(ACT,PERSONAE)/TITLE ,
+    $b in doc("j_caesar.xml")//ACT[./TITLE]/*/SPEECH/../TITLE ,
+    $c in doc("j_caesar.xml")//ACT[./TITLE]/*/SPEECH/../*/.././TITLE ,
+    $d in doc("j_caesar.xml")//ACT[(./TITLE)==(./TITLE)]/*/SPEECH/../TITLE ,
+    $e in doc("j_caesar.xml")//ACT[not(./TITLE)==(./TITLE)]/*/SPEECH/../TITLE
+
+
+return $a,$b,$c,$d,$e
