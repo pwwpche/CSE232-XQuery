@@ -29,28 +29,13 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             DocumentBuilder db = dbf.newDocumentBuilder();
 
             //parse using builder to get DOM representation of the XML file
-            List<Element> next = new ArrayList<>();
+            List<Node> next = new ArrayList<>();
             Document doc = db.parse(fileName);
-            doc.getDocumentElement().normalize();
+            List<Node> prev = new ArrayList<>();
+            prev.add(doc);
 
             //Visit next node
-            if(ctx.LSLASH().size() == 1){ //Immediate children
-                // Only visit immediate children
-                next.add(doc.getDocumentElement());
-            }else{
-                NodeList nodes = doc.getElementsByTagName("*");
-                for(int i = 0 ; i < nodes.getLength() ; i++){
-                    if(nodes.item(i).getNodeType() == Node.ELEMENT_NODE){
-                        next.add((Element) nodes.item(i));
-                    }
-                }
-            }
-            //TODO: What if we have doc("...")/text()?
-
-//            if(ctx.rp().getText().equals("text()")){
-//                next.clear();
-//                next.add(doc);
-//            }
+            getChildren(prev, next, ctx.LSLASH().size());
 
             results = new Value(next);
             this.visit(ctx.rp());
@@ -65,16 +50,17 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     @Override
     public Value visitRp_dotdot(XQueryLangParser.Rp_dotdotContext ctx) {
         Value prev = results;
-        Set<Element> nextSet = new HashSet<>();
+        Set<Node> nextSet = new HashSet<>();
 
-        for(Element element : prev.asListElem()){
-            results = prev;
-            List<Element> nextList = new ArrayList<>();
+        for(Node node : prev.asListNode()){
+            List<Node> prevList = new ArrayList<>();
+            List<Node> nextList = new ArrayList<>();
             try {
-                nextList.add((Element) element.getParentNode().getParentNode());
+                prevList.add( node.getParentNode().getParentNode());
+                getChildren(prevList, nextList, 1);
                 nextSet.addAll(nextList);
             }catch(Exception e){
-                nextSet.add(element.getOwnerDocument().getDocumentElement());
+                nextSet.add(node.getOwnerDocument());
             }
         }
         results = new Value(new ArrayList<>(nextSet));
@@ -84,13 +70,13 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_star(XQueryLangParser.Rp_starContext ctx) {
-        List<Element> prev = results.asListElem();
-        List<Element> next = new ArrayList<>();
-        for(Element element :prev){
-            Node childNode = element.getFirstChild();
-            while( childNode !=null ){
-                next.add((Element) childNode);
-                childNode =childNode.getNextSibling();
+        List<Node> prev = results.asListNode();
+        List<Node> next = new ArrayList<>();
+        for(Node node :prev){
+            Node childNode = node.getFirstChild();
+            while( childNode != null ){
+                next.add( childNode);
+                childNode = childNode.getNextSibling();
             }
         }
         results = new Value(next);
@@ -100,20 +86,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_dot(XQueryLangParser.Rp_dotContext ctx) {
-        Value prev = results;
-        Set<Element> nextSet = new HashSet<>();
-
-        for(Element element : prev.asListElem()){
-            results = prev;
-            List<Element> nextList = new ArrayList<>();
-            try {
-                nextList.add((Element) element.getParentNode());
-                nextSet.addAll(nextList);
-            }catch(Exception e){
-                nextSet.add(element.getOwnerDocument().getDocumentElement());
-            }
-
-        }
+        Set<Node> nextSet = new HashSet<>(results.asListNode());
         results = new Value(new ArrayList<>(nextSet));
         return results;
     }
@@ -125,33 +98,22 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         results = prevResult;
         Value rp2 = this.visit(ctx.rp(1));
 
-        Set<Element> resSet = new HashSet<>();
+        Set<Node> resSet = new HashSet<>();
 
-        resSet.addAll(rp1.asListElem());
-        resSet.addAll(rp2.asListElem());
-        List<Element> res = new ArrayList<>(resSet);
+        resSet.addAll(rp1.asListNode());
+        resSet.addAll(rp2.asListNode());
+        List<Node> res = new ArrayList<>(resSet);
         results = new Value(res);
         return results;
     }
 
     @Override
     public Value visitRp_text(XQueryLangParser.Rp_textContext ctx) {
-        List<Element> prev = results.asListElem();
-        String res = "";
-        for(Element element : prev){
-            res += element.getTextContent();
-        }
-        results = new Value(res);
-        return results;
-    }
-
-    @Override
-    public Value visitRp_tagName(XQueryLangParser.Rp_tagNameContext ctx) {
-        List<Element> prev = results.asListElem();
-        List<Element> next = new ArrayList<>();
-        for(Element element : prev){
-            if(element.getTagName().equals(ctx.getText())){
-                next.add(element);
+        List<Node> prev = results.asListNode();
+        List<Node> next = new ArrayList<>();
+        for(Node node : prev){
+            if(node.getNodeType() == Node.TEXT_NODE){
+                next.add(node);
             }
         }
         results = new Value(next);
@@ -159,22 +121,42 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     }
 
     @Override
+    public Value visitRp_tagName(XQueryLangParser.Rp_tagNameContext ctx) {
+
+        List<Node> prev = results.asListNode();
+        List<Node> next = new ArrayList<>();
+        for(Node node : prev){
+            if(node.getNodeType() == Node.ELEMENT_NODE){
+                Element element = (Element) node;
+                if(element.getTagName().equals(ctx.getText())){
+                    next.add(element);
+                }
+            }
+
+        }
+        results = new Value(next);
+        return results;
+    }
+
+    @Override
     public Value visitRp_filter(XQueryLangParser.Rp_filterContext ctx) {
-        assert results.asListElem().size() == new HashSet<>(results.asListElem()).size();
+        assert results.asListNode().size() == new HashSet<>(results.asListNode()).size();
 
         this.visit(ctx.rp());
-        List<Element> prev = results.asListElem();
-        List<Element> next = new ArrayList<>();
-        for(Element element : prev){
-            List<Element> prevVal = new ArrayList<>();
-            prevVal.add(element);
-            List<Element> newVal = new ArrayList<>();
+        List<Node> prev = results.asListNode();
+        List<Node> next = new ArrayList<>();
+        for(Node node : prev){
+            List<Node> prevVal = new ArrayList<>();
+            prevVal.add(node);
+
+            List<Node> newVal = new ArrayList<>();
             getChildren(prevVal, newVal, 1);
+
             results = new Value(newVal);
             Value ret = this.visit(ctx.filter());
             assert ret.isBoolean();
             if(ret.asBoolean()){
-                next.add(element);
+                next.add(node);
             }
         }
         results = new Value(next);
@@ -189,20 +171,23 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_at(XQueryLangParser.Rp_atContext ctx) {
-        List<Element> prev = results.asListElem();
-        List<Element> next = new ArrayList<>();
+        List<Node> prev = results.asListNode();
+        List<Node> next = new ArrayList<>();
 
         //Get the name of the attribute
         String attrName = ctx.getText();
 
         //For each node in previous result, get the attribute value.
-        //TODO: Should we return result as pure string, or a new element node?
-        for(Element element : prev){
+        //TODO: Should we return result as pure string, or a new node node?
+        for(Node node : prev){
+            if(node.getNodeType() != Node.ELEMENT_NODE){
+                continue;
+            }
+            Element element = (Element) node;
             String attrContent = element.getAttribute(ctx.getText());
-            Element attrElem = createElement(attrName);
+            Node attrElem = createElement(attrName);
             assert attrElem != null;
             attrElem.setTextContent(attrContent);
-
             next.add(attrElem);
         }
         results = new Value(next);
@@ -212,44 +197,52 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     @Override
     public Value visitRp_slash(XQueryLangParser.Rp_slashContext ctx) {
         this.visit(ctx.rp(0));
-        List<Element> prev = results.asListElem();
-        List<Element> next = new ArrayList<>();
+        List<Node> prev = results.asListNode();
+        List<Node> next = new ArrayList<>();
         getChildren(prev, next, ctx.LSLASH().size());
-        if(ctx.rp(1).getText().equals("text()")){
-            if (ctx.LSLASH().size()==1){
-                next = prev;
-            }
-            else{
-                for (Element element:prev){
-                    next.add(element);
-                }
-            }
-        }
         results = new Value(next);
         this.visit(ctx.rp(1));
         return results;
     }
 
-    private void getChildren(List<Element> prev, List<Element> next, int slashes){
-        Set<Element> nextSet = new HashSet<>();
-        for(Element element : prev){
+    private void getChildren(List<Node> prev, List<Node> next, int slashes){
+        Set<Node> nextSet = new HashSet<>();
+        for(Node node : prev){
             if(slashes == 1){ //Immediate children
                 // Only visit immediate children
-                Node childNode = element.getFirstChild();
+                Node childNode = node.getFirstChild();
                 while( childNode !=null ){
-                    if (childNode.getNodeType() == Node.ELEMENT_NODE) {
-                        Element childElement = (Element) childNode;
-                        nextSet.add(childElement);
-                    }
+                    nextSet.add(childNode);
                     childNode = childNode.getNextSibling();
                 }
             }else{
-                NodeList nodes = element.getElementsByTagName("*");
-                for(int i = 0 ; i < nodes.getLength() ; i++){
-                    if(nodes.item(i).getNodeType() == Node.ELEMENT_NODE){
-                        nextSet.add((Element) nodes.item(i));
+                //Get all the descendants, not including itself.
+                if(node.getNodeType() == Node.ELEMENT_NODE || node.getNodeType() == Node.DOCUMENT_NODE){
+                    //First add its own children
+                    NodeList childs = node.getChildNodes();
+                    for(int i = 0 ; i < childs.getLength() ; i++){
+                        nextSet.add(childs.item(i));
                     }
+                    //Then add children's children.
+
+                    NodeList nodeList ;
+                    if(node.getNodeType() == Node.DOCUMENT_NODE){
+                        nodeList = ((Document) node).getElementsByTagName("*");
+                    }else{
+                        nodeList = ((Element) node).getElementsByTagName("*");
+                    }
+                    for(int i = 0 ; i < nodeList.getLength() ; i++){
+                        NodeList childsList = nodeList.item(i).getChildNodes();
+                        for(int j = 0 ; j < childsList.getLength() ; j++){
+                            nextSet.add(childsList.item(j));
+                        }
+                    }
+                }else{
+                    //TODO: Does a node other than ELEMENT_NODE have children?
+                    return ;
                 }
+
+
             }
         }
         next.addAll(nextSet);
@@ -260,16 +253,16 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     @Override
     public Value visitFilter_rp(XQueryLangParser.Filter_rpContext ctx) {
         this.visit(ctx.rp());
-        results = new Value(results.asListElem().size() != 0);
+        results = new Value(results.asListNode().size() != 0);
         return results;
     }
 
     @Override
     public Value visitFilter_eq(XQueryLangParser.Filter_eqContext ctx) {
         Value prev = results;
-        Set<Element> res1 = new HashSet<>(this.visit(ctx.rp(0)).asListElem());
+        Set<Node> res1 = new HashSet<>(this.visit(ctx.rp(0)).asListNode());
         results = prev;
-        Set<Element> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListElem());
+        Set<Node> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListNode());
         res1.retainAll(res2);
         results = new Value(res1.size() > 0);
         return results;
@@ -293,9 +286,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     public Value visitFilter_is(XQueryLangParser.Filter_isContext ctx) {
         //TODO: What is the difference between `eq` and `is`?
         Value prev = results;
-        Set<Element> res1 = new HashSet<>(this.visit(ctx.rp(0)).asListElem());
+        Set<Node> res1 = new HashSet<>(this.visit(ctx.rp(0)).asListNode());
         results = prev;
-        Set<Element> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListElem());
+        Set<Node> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListNode());
         res1.retainAll(res2);
         if(res1.size() > 0){
             results = new Value(true);
@@ -347,21 +340,23 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             throw new RuntimeException("Invalid tag name");
         }
         Value newVal = this.visit(ctx.statement());
-        Element newElement = createElement(tagName);
+        Node newNode = createElement(tagName);
+
         if(newVal.isListElem()){
-            List<Element> childs = newVal.asListElem();
-            for(Element element : childs){
-                assert newElement != null;
-                newElement.appendChild(element);
+            List<Node> childs = newVal.asListNode();
+            for(Node node : childs){
+                assert newNode != null;
+                Node importedNode = newDoc.importNode(node, true);
+                newNode.appendChild(importedNode);
             }
             childs.clear();
-            childs.add(newElement);
+            childs.add(newNode);
             results = new Value(childs);
         }else if(newVal.isString()){
-            assert newElement != null;
-            newElement.setTextContent(newVal.asString());
-            List<Element> res = new ArrayList<>();
-            res.add(newElement);
+            assert newNode != null;
+            newNode.setTextContent(newVal.asString());
+            List<Node> res = new ArrayList<>();
+            res.add(newNode);
             results = new Value(res);
         }
 
@@ -384,9 +379,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value res1 = this.visit(ctx.statement(0));
         results = prevResult;
         Value res2 = this.visit(ctx.statement(1));
-        List<Element> res = new ArrayList<>();
-        res.addAll(res1.asListElem());
-        res.addAll(res2.asListElem());
+        List<Node> res = new ArrayList<>();
+        res.addAll(res1.asListNode());
+        res.addAll(res2.asListNode());
         results = new Value(res);
         return results;
 
@@ -418,13 +413,10 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     public Value visitStat_slash(XQueryLangParser.Stat_slashContext ctx) {
         results = this.visit(ctx.statement());
 
-        List<Element> prev = results.asListElem();
-        List<Element> next = new ArrayList<>();
+        List<Node> prev = results.asListNode();
+        List<Node> next = new ArrayList<>();
 
         getChildren(prev, next, ctx.LSLASH().size());
-        if(ctx.rp().getText().equals("text()")){
-            next = prev;
-        }
         results = new Value(next);
         this.visit(ctx.rp());
         return results;
@@ -440,7 +432,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     public Value visitForStatement(XQueryLangParser.ForStatementContext ctx) {
         List<String> addedVars = this.getVariables(ctx.forClause());
         addedVars.addAll(this.getVariables(ctx.letClause()));
-        List<Element> finalResult = new ArrayList<>();
+        List<Node> finalResult = new ArrayList<>();
         this.forStatementDFS(ctx.forClause(), 0, finalResult);
 
         results = new Value(finalResult);
@@ -464,7 +456,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     }
 
 
-    private void forStatementDFS(XQueryLangParser.ForClauseContext ctx, int varIdx, List<Element> finalResult){
+    private void forStatementDFS(XQueryLangParser.ForClauseContext ctx, int varIdx, List<Node> finalResult){
         // Treat this as a tree.
         if(varIdx >= ctx.variable().size()){     //All the variables have already been set, do the processing work.
             XQueryLangParser.ForStatementContext parentCtx = (XQueryLangParser.ForStatementContext)ctx.getParent();
@@ -481,13 +473,13 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
             }
             Value returnResult = this.visit(parentCtx.returnClause());
-            finalResult.addAll(returnResult.asListElem());
+            finalResult.addAll(returnResult.asListNode());
         }else{                                  // Set up variables before processing.
             String variable = ctx.variable(varIdx).getText();
             Value value = this.visit(ctx.statement(varIdx));
-            for(Element element : value.asListElem()){
-                List<Element> elemList = new ArrayList<>();
-                elemList.add(element);
+            for(Node node : value.asListNode()){
+                List<Node> elemList = new ArrayList<>();
+                elemList.add(node);
                 mem.put(variable, new Value(elemList));
                 forStatementDFS(ctx, varIdx + 1, finalResult);
             }
@@ -544,12 +536,43 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         results = prevResult;
         Value right = this.visit(ctx.statement(1));
 
+        //Special handler for string comparision
+        String leftStr, rightStr;
+        if(left.isString() || right.isString()){
+            if(left.isListNode()){
+                if(left.asListNode().size() == 1
+                        && left.asListNode().get(0).getNodeType() == Node.TEXT_NODE){
+                    leftStr = left.asListNode().get(0).getTextContent();
+                }else{
+                    results = new Value(false);
+                    return results;
+                }
+            }else{
+                leftStr = left.asString();
+            }
+
+            if(right.isListNode()){
+                if(right.asListNode().size() != 1
+                        || right.asListNode().get(0).getNodeType() != Node.TEXT_NODE){
+                    results = new Value(false);
+                    return results;
+                }else{
+                    rightStr = right.asListNode().get(0).getTextContent();
+                }
+            }else{
+                rightStr = right.asString();
+            }
+            results = new Value(leftStr.equals(rightStr));
+            return results;
+
+        }
         results = new Value(left.compareValue(right));
         return results;
     }
 
     @Override
     public Value visitCond_is(XQueryLangParser.Cond_isContext ctx) {
+        //TODO: This is not implemented.
         return super.visitCond_is(ctx);
     }
 
@@ -579,10 +602,10 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         }else{                                  // Set up variables before processing.
             String variable = ctx.variable(varIdx).getText();
             Value value = this.visit(ctx.statement(varIdx));
-            for(Element element : value.asListElem()){
-                List<Element> elemList = new ArrayList<>();
-                elemList.add(element);
-                mem.put(variable, new Value(elemList));
+            for(Node node : value.asListNode()){
+                List<Node> nodeList = new ArrayList<>();
+                nodeList.add(node);
+                mem.put(variable, new Value(nodeList));
                 boolean res = someClauseDFS(ctx, varIdx + 1);
                 if(res){
                     return true;

@@ -19,7 +19,7 @@ public class Value {
     public List<Element> asListElem() {
         if(isListElem()){
             return (List<Element>)value;
-        }else if(isListElem()){
+        }else if(isElement()){
             List<Element> result = new ArrayList<>();
             result.add((Element)value);
             return result;
@@ -27,6 +27,21 @@ public class Value {
             List<Element> emptyList = new ArrayList<>();
             return emptyList;
         }
+
+    }
+
+    public List<Node> asListNode(){
+        if(isListNode()){
+            return (List<Node>) value;
+        }else if(isNode()){
+            List<Node> result = new ArrayList<>();
+            result.add((Node)value);
+            return result;
+        }else{
+            List<Node> emptyList = new ArrayList<>();
+            return emptyList;
+        }
+
 
     }
 
@@ -45,6 +60,11 @@ public class Value {
     public boolean isListElem() { return value instanceof List; }
 
     public boolean isElement() { return value instanceof Element; }
+
+    public boolean isListNode() { return value instanceof List; }
+
+    public boolean isNode() { return value instanceof Node; }
+
 
     @Override
     public int hashCode() {
