@@ -53,12 +53,8 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Set<Node> nextSet = new HashSet<>();
 
         for(Node node : prev.asListNode()){
-            List<Node> prevList = new ArrayList<>();
-            List<Node> nextList = new ArrayList<>();
             try {
-                prevList.add( node.getParentNode().getParentNode());
-                getChildren(prevList, nextList, 1);
-                nextSet.addAll(nextList);
+                nextSet.add( node.getParentNode().getParentNode());
             }catch(Exception e){
                 nextSet.add(node.getOwnerDocument());
             }
@@ -70,23 +66,21 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitRp_star(XQueryLangParser.Rp_starContext ctx) {
-        List<Node> prev = results.asListNode();
-        List<Node> next = new ArrayList<>();
-        for(Node node :prev){
-            Node childNode = node.getFirstChild();
-            while( childNode != null ){
-                next.add( childNode);
-                childNode = childNode.getNextSibling();
-            }
-        }
-        results = new Value(next);
         return results;
-
     }
 
     @Override
     public Value visitRp_dot(XQueryLangParser.Rp_dotContext ctx) {
-        Set<Node> nextSet = new HashSet<>(results.asListNode());
+        Value prev = results;
+        Set<Node> nextSet = new HashSet<>();
+
+        for(Node node : prev.asListNode()){
+            try {
+                nextSet.add( node.getParentNode());
+            }catch(Exception e){
+                nextSet.add(node.getOwnerDocument());
+            }
+        }
         results = new Value(new ArrayList<>(nextSet));
         return results;
     }
