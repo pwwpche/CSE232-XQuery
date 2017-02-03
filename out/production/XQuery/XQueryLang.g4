@@ -17,6 +17,12 @@
 //      http://stackoverflow.com/questions/29777778/antlr-4-5-mismatched-input-x-expecting-x
 //   ***********************
 
+/*
+
+    Problem: A node is used in a different document than the one that created it.
+    Solution: http://stackoverflow.com/questions/3184268/org-w3c-dom-domexception-wrong-document-err-a-node-is-used-in-a-different-docu
+*/
+
 
 
 grammar XQueryLang;

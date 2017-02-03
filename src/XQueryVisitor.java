@@ -257,8 +257,16 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Set<Node> res1 = new HashSet<>(this.visit(ctx.rp(0)).asListNode());
         results = prev;
         Set<Node> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListNode());
-        res1.retainAll(res2);
-        results = new Value(res1.size() > 0);
+        boolean flag=false;
+        for (Node node1:res1){
+            for (Node node2:res2){
+                if (node1.isEqualNode(node2)){
+                    flag=true;
+                    break;
+                }
+            }
+        }
+        results = new Value(flag);
         return results;
     }
 

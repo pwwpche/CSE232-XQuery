@@ -1,5 +1,4 @@
-for $a in doc("/Users/liuche/IdeaProjects/XQuery/src/example.xml")/. ,
-    $b in $a//zu ,
-    $c in $b//tex
-where $c/text() = "Dear 3"
-return $c
+for $a in doc("/Users/xinyangli/IdeaProjects/CSE232XQuery/src/example.xml")//email[./zu/titel[./test1]/tex  is ./zu/titel[./test2]/tex ]/von
+
+
+return $a

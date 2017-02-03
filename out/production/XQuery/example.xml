@@ -2,16 +2,24 @@
 <!DOCTYPE email [
         <!ELEMENT email (von,zu,prior)>
         <!ELEMENT von (#PCDATA)>
+        <!ELEMENT test1 (#PCDATA)>
+        <!ELEMENT test2 (#PCDATA)>
         <!ELEMENT zu ( titel* )>
-        <!ELEMENT titel (tex)>
+        <!ELEMENT titel (test1*,test2*,tex)>
         <!ELEMENT tex (#PCDATA)>
         <!ELEMENT prior EMPTY>
         <!ATTLIST prior type CDATA #REQUIRED >
         ]>
 <email>
     <von>test@test.com</von>
+
     <zu>
         <titel>
+            <test1>kk</test1>
+            <tex>Dear 1</tex>
+        </titel>
+        <titel>
+            <test2>kk</test2>
             <tex>Dear 1</tex>
         </titel>
         <titel>

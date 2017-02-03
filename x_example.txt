@@ -1,4 +1,3 @@
-for $a in doc("j_caesar.xml")//(ACT,PERSONAE)/TITLE ,
-    $b in doc("j_caesar.xml")//ACT[./TITLE]/*/SPEECH/../TITLE
+for $a in doc("j_caesar.xml")//ACT[./TITLE[./text() = ]]/
 
-return $a,$b
+return $a
