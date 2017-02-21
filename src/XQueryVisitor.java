@@ -580,7 +580,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitCond_paren(XQueryLangParser.Cond_parenContext ctx) {
-        return this.visit(ctx.statement());
+        this.visit(ctx.statement());
+        results = new Value(results.isListNode() && results.asListNode().size() == 0);
+        return results;
     }
 
     @Override

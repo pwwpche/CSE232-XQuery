@@ -17,7 +17,7 @@ import java.io.File;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        XQueryLangLexer lexer = new XQueryLangLexer(new ANTLRFileStream("/Users/liuche/IdeaProjects/XQuery/xqueries.txt"));
+        XQueryLangLexer lexer = new XQueryLangLexer(new ANTLRFileStream("/Users/liuche/IdeaProjects/XQuery/playQuery.txt"));
         XQueryLangParser parser = new XQueryLangParser(new CommonTokenStream(lexer));
         XQueryLangParser.StatementContext statement = parser.statement();
         XQueryVisitor visitor = new XQueryVisitor();

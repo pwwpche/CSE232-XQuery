@@ -88,8 +88,8 @@ attName
 
 
 statement
- : variable                                                         #stat_variable
- | stringConstant                                                   #stat_constant
+ : stringConstant                                                   #stat_constant
+ | variable                                                         #stat_variable
  | ap                                                               #stat_ap
  | LESS tagName GREATER LBRACE statement RBRACE LESS LSLASH tagName GREATER       #stat_tag
  | LPAREN statement RPAREN                                          #stat_paren
@@ -126,7 +126,7 @@ whereClause
 condition
  : statement op=(EQUAL|EQ) statement                #cond_equal
  | statement op=(DEQUAL|IS) statement               #cond_is
- | EMPTY? LPAREN statement RPAREN                   #cond_paren
+ | EMPTY LPAREN statement RPAREN                   #cond_paren
  | SOME (variable IN statement COMMA)* variable
         IN statement SATISFIES condition            #cond_some
  | condition AND condition                          #cond_and
@@ -140,7 +140,7 @@ variable
  ;
 
 stringConstant
- : STRING
+ : STRING | PATHSTRING
  ;
 
 FOR
@@ -289,7 +289,10 @@ PATHSTRING
  : '"' [A-Za-z0-9./_]* '"'
  ;
 
-
 STRING
- : '"' (~["\r\n] | '""')* '"'
+ : '"' (~["\r\n])* '"'
  ;
+
+
+
+
