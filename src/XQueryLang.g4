@@ -126,7 +126,8 @@ whereClause
 condition
  : statement op=(EQUAL|EQ) statement                #cond_equal
  | statement op=(DEQUAL|IS) statement               #cond_is
- | EMPTY LPAREN statement RPAREN                   #cond_paren
+ | LPAREN condition RPAREN                          #cond_paren
+ | EMPTY LPAREN statement RPAREN                    #cond_empty
  | SOME (variable IN statement COMMA)* variable
         IN statement SATISFIES condition            #cond_some
  | condition AND condition                          #cond_and

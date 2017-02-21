@@ -447,6 +447,18 @@ public class XQueryLangBaseListener implements XQueryLangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCond_empty(XQueryLangParser.Cond_emptyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCond_empty(XQueryLangParser.Cond_emptyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCond_equal(XQueryLangParser.Cond_equalContext ctx) { }
 	/**
 	 * {@inheritDoc}

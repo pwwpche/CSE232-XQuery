@@ -1,11 +1,6 @@
-<acts> 
- {	for $a in doc("j_caesar.xml")//ACT
-where empty ( for $sp in $a/SCENE/SPEECH/SPEAKER
- where $sp/text() = "CASCA" 
-   return <speaker> {$sp/text()}</speaker> 
-     )
-
-            return <act>{$a/TITLE/text()}</act>
-
-        }
-</acts>
+<result>{
+for $a in doc("j_caesar.xml")//PERSONAE, $b in $a/PERSONA
+ where ($b/text() = "JULIUS CAESAR") or ($b/text()= "Another Poet")
+return $b
+       }
+</result>

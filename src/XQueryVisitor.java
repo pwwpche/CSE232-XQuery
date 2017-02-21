@@ -524,10 +524,17 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value prevResult = results;
         Value left = this.visit(ctx.condition(0));
         results = prevResult;
-        Value right = this.visit(ctx.condition(0));
+        Value right = this.visit(ctx.condition(1));
 
         assert(left.isBoolean() && right.isBoolean());
         results = new Value(left.asBoolean() && right.asBoolean());
+        return results;
+    }
+
+    @Override
+    public Value visitCond_empty(XQueryLangParser.Cond_emptyContext ctx) {
+        this.visit(ctx.statement());
+        results = new Value(results.isListNode() && results.asListNode().size() == 0);
         return results;
     }
 
@@ -580,9 +587,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitCond_paren(XQueryLangParser.Cond_parenContext ctx) {
-        this.visit(ctx.statement());
-        results = new Value(results.isListNode() && results.asListNode().size() == 0);
-        return results;
+        return this.visit(ctx.condition());
     }
 
     @Override
@@ -633,7 +638,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value prevResult = results;
         Value left = this.visit(ctx.condition(0));
         results = prevResult;
-        Value right = this.visit(ctx.condition(0));
+        Value right = this.visit(ctx.condition(1));
 
         assert(left.isBoolean() && right.isBoolean());
         results = new Value(left.asBoolean() || right.asBoolean());

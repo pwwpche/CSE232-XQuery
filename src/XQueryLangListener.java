@@ -419,6 +419,18 @@ public interface XQueryLangListener extends ParseTreeListener {
 	 */
 	void exitCond_and(XQueryLangParser.Cond_andContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code cond_empty}
+	 * labeled alternative in {@link XQueryLangParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterCond_empty(XQueryLangParser.Cond_emptyContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code cond_empty}
+	 * labeled alternative in {@link XQueryLangParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitCond_empty(XQueryLangParser.Cond_emptyContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code cond_equal}
 	 * labeled alternative in {@link XQueryLangParser#condition}.
 	 * @param ctx the parse tree

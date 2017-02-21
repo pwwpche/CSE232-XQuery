@@ -252,6 +252,13 @@ public interface XQueryLangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCond_and(XQueryLangParser.Cond_andContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code cond_empty}
+	 * labeled alternative in {@link XQueryLangParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCond_empty(XQueryLangParser.Cond_emptyContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code cond_equal}
 	 * labeled alternative in {@link XQueryLangParser#condition}.
 	 * @param ctx the parse tree
