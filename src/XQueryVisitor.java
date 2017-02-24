@@ -258,8 +258,8 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         results = prev;
         Set<Node> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListNode());
         boolean flag=false;
-        for (Node node1:res1){
-            for (Node node2:res2){
+        for (Node node1 : res1){
+            for (Node node2 : res2){
                 if (node1.isEqualNode(node2)){
                     flag=true;
                     break;
@@ -545,7 +545,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         results = prevResult;
         Value right = this.visit(ctx.statement(1));
 
-        //Special handler for string comparision
+
         String leftStr, rightStr;
         if(left.isString() || right.isString()){
             if(left.isListNode()){
@@ -657,7 +657,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitStringConstant(XQueryLangParser.StringConstantContext ctx) {
-        results = new Value(ctx.getText().replace("\"", ""));
+        List<Node> res = new ArrayList<>();
+        res.add(createTextNode(ctx.getText().replace("\"", "")));
+        results = new Value(res);
         return results;
     }
 
@@ -769,4 +771,18 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             return null;
         }
     }
+
+    private Node createTextNode(String str){
+        if(newDoc != null){
+            return newDoc.createTextNode(str);
+        }
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        try {
+            newDoc = dbf.newDocumentBuilder().newDocument();
+            return newDoc.createTextNode(str);
+        } catch (ParserConfigurationException ex) {
+            return null;
+        }
+    }
+
 }
