@@ -14,21 +14,6 @@ public class Value {
         this.value = value;
     }
 
-    public Element asElement() { return (Element)value; }
-
-    public List<Element> asListElem() {
-        if(isListElem()){
-            return (List<Element>)value;
-        }else if(isElement()){
-            List<Element> result = new ArrayList<>();
-            result.add((Element)value);
-            return result;
-        }else{
-            List<Element> emptyList = new ArrayList<>();
-            return emptyList;
-        }
-
-    }
 
     public List<Node> asListNode(){
         if(isListNode()){
@@ -47,24 +32,13 @@ public class Value {
 
     public Boolean asBoolean() { return (Boolean)value; }
 
-    public String asString() {
-        return String.valueOf(value);
-    }
-
-    public boolean isString() { return value instanceof String; }
-
     public boolean isBoolean() {
         return value instanceof Boolean;
     }
 
-    public boolean isListElem() { return value instanceof List; }
-
-    public boolean isElement() { return value instanceof Element; }
-
     public boolean isListNode() { return value instanceof List; }
 
-    public boolean isNode() { return value instanceof Node; }
-
+    public boolean isNode() {return value instanceof Node;}
 
     @Override
     public int hashCode() {
@@ -81,21 +55,14 @@ public class Value {
             return asBoolean().equals(that.asBoolean());
         }
 
-        if(isString() && that.isString()){
-            return asString().equals(that.asString());
-        }
 
-        if(isElement() && that.isElement()){
-            return asElement().equals(that.asElement());
-        }
-
-        if(isListElem() && that.isListElem()){
-            if(this.asListElem().size() != that.asListElem().size()){
+        if(isListNode() && that.isListNode()){
+            if(this.asListNode().size() != that.asListNode().size()){
                 return false;
             }
-            List<Element> thisList = asListElem();
-            List<Element> thatList = that.asListElem();
-            for(int i = 0 ; i < asListElem().size() ; i++){
+            List<Node> thisList = asListNode();
+            List<Node> thatList = that.asListNode();
+            for(int i = 0 ; i < asListNode().size() ; i++){
                 if(! thisList.get(i).equals(thatList.get(i)) ){
                     return false;
                 }
@@ -122,21 +89,14 @@ public class Value {
             return asBoolean().equals(that.asBoolean());
         }
 
-        if(isString()){
-            return asString().equals(that.asString());
-        }
 
-        if(isElement()){
-            return asElement().equals(that.asElement());
-        }
-
-        if(isListElem()){
-            if(this.asListElem().size() != that.asListElem().size()){
+        if(isListNode()){
+            if(this.asListNode().size() != that.asListNode().size()){
                 return false;
             }
-            List<Element> thisList = asListElem();
-            List<Element> thatList = that.asListElem();
-            for(int i = 0 ; i < asListElem().size() ; i++){
+            List<Node> thisList = asListNode();
+            List<Node> thatList = that.asListNode();
+            for(int i = 0 ; i < asListNode().size() ; i++){
                 if(! thisList.get(i).equals(thatList.get(i)) ){
                     return false;
                 }
