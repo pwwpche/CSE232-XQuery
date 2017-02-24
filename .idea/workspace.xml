@@ -1,34 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="96e196cf-2c8d-48aa-a257-2b535cc6af29" name="Default" comment="Implemented filters">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/Main.class" afterPath="$PROJECT_DIR$/out/production/XQuery/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangBaseListener.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangBaseListener.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangBaseVisitor.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangBaseVisitor.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangLexer.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangLexer.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangListener.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangListener.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_andContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_andContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_equalContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_equalContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_isContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_isContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_notContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_notContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_orContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_orContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_parenContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_parenContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_someContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$Cond_someContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$ConditionContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$ConditionContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$ForClauseContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$ForClauseContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$ForStatementContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$ForStatementContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$LetClauseContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$LetClauseContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$LetStatementContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$LetStatementContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$ReturnClauseContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$ReturnClauseContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$StringConstantContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$StringConstantContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$VariableContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$VariableContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$WhereClauseContext.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser$WhereClauseContext.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangParser.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLangVisitor.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLangVisitor.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryVisitor.class" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryVisitor.class" />
+    <list default="true" id="96e196cf-2c8d-48aa-a257-2b535cc6af29" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/XQuery/XQueryLang.g4" afterPath="$PROJECT_DIR$/out/production/XQuery/XQueryLang.g4" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/playQuery.txt" afterPath="$PROJECT_DIR$/playQuery.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main.java" afterPath="$PROJECT_DIR$/src/Main.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Value.java" afterPath="$PROJECT_DIR$/src/Value.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/XQueryLang.g4" afterPath="$PROJECT_DIR$/src/XQueryLang.g4" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/XQueryVisitor.java" afterPath="$PROJECT_DIR$/src/XQueryVisitor.java" />
     </list>
     <ignored path="XQuery.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,8 +36,8 @@
       <file leaf-file-name="XQueryLang.g4" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/XQueryLang.g4">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="44" column="5" selection-start-line="44" selection-start-column="3" selection-end-line="44" selection-end-column="5" />
+            <state relative-caret-position="-286">
+              <caret line="82" column="31" selection-start-line="82" selection-start-column="31" selection-end-line="82" selection-end-column="31" />
               <folding>
                 <element signature="e#0#5026#0" expanded="true" />
               </folding>
@@ -69,33 +48,46 @@
       <file leaf-file-name="playQuery.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playQuery.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="9" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
+            <state relative-caret-position="15">
+              <caret line="1" column="36" selection-start-line="0" selection-start-column="0" selection-end-line="8" selection-end-column="17" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="XQueryVisitor.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="XQueryVisitor.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/XQueryVisitor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5696">
-              <caret line="176" column="49" selection-start-line="176" selection-start-column="42" selection-end-line="176" selection-end-column="49" />
+            <state relative-caret-position="198">
+              <caret line="488" column="13" selection-start-line="488" selection-start-column="13" selection-end-line="488" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#21159#21160#0" expanded="true" />
-                <element signature="e#21199#21200#0" expanded="true" />
+                <element signature="e#21477#21478#0" expanded="true" />
+                <element signature="e#21517#21518#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Value.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="j_caesar.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/j_caesar.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-150">
+              <caret line="1" column="23" selection-start-line="1" selection-start-column="23" selection-end-line="1" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Value.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Value.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="661">
-              <caret line="107" column="5" selection-start-line="107" selection-start-column="5" selection-end-line="107" selection-end-column="5" />
-              <folding />
+            <state relative-caret-position="150">
+              <caret line="91" column="21" selection-start-line="91" selection-start-column="11" selection-end-line="91" selection-end-column="21" />
+              <folding>
+                <element signature="e#1144#1145#0" expanded="true" />
+                <element signature="e#1188#1189#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -103,9 +95,12 @@
       <file leaf-file-name="XQueryLangParser.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/XQueryLangParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-150">
-              <caret line="1161" column="17" selection-start-line="1161" selection-start-column="17" selection-end-line="1161" selection-end-column="17" />
-              <folding />
+            <state relative-caret-position="102">
+              <caret line="1743" column="0" selection-start-line="1743" selection-start-column="0" selection-end-line="1743" selection-end-column="0" />
+              <folding>
+                <element signature="e#35725#35726#0" expanded="true" />
+                <element signature="e#35784#35785#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -125,8 +120,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="443">
-              <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+            <state relative-caret-position="188">
+              <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -185,11 +180,11 @@
         <option value="$PROJECT_DIR$/play.dtd" />
         <option value="$PROJECT_DIR$/src/example.xml" />
         <option value="$PROJECT_DIR$/xqueries.txt" />
-        <option value="$PROJECT_DIR$/src/Main.java" />
+        <option value="$PROJECT_DIR$/src/Value.java" />
         <option value="$PROJECT_DIR$/src/XQueryLang.g4" />
+        <option value="$PROJECT_DIR$/src/Main.java" />
         <option value="$PROJECT_DIR$/playQuery.txt" />
         <option value="$PROJECT_DIR$/src/XQueryVisitor.java" />
-        <option value="$PROJECT_DIR$/src/Value.java" />
       </list>
     </option>
   </component>
@@ -839,7 +834,7 @@
       <workItem from="1487663980067" duration="2291000" />
       <workItem from="1487667940952" duration="59000" />
       <workItem from="1487668054438" duration="2606000" />
-      <workItem from="1487916259132" duration="4472000" />
+      <workItem from="1487916259132" duration="8841000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <created>1485751208558</created>
@@ -960,11 +955,18 @@
       <option name="project" value="LOCAL" />
       <updated>1487921433786</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Remove unused types in Value.java">
+      <created>1487923801318</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1487923801318</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="153606000" />
+    <option name="totallyTimeSpent" value="157975000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -976,7 +978,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1280" height="707" extended-state="6" />
+    <frame x="0" y="23" width="1280" height="707" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -988,7 +990,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3284553" sideWeight="0.5048465" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3284553" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3284553" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3284553" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3284553" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -998,7 +1000,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41463414" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41463414" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1056,84 +1058,108 @@
     <MESSAGE value="Add EMPTY condition lexer, and fix bug in Cond_and + Cond_or" />
     <MESSAGE value="StringConstant should return a newly created text node." />
     <MESSAGE value="StringConstant &amp; Cond_constant now returns text node. Value of String type could be deprecated." />
-    <option name="LAST_COMMIT_MESSAGE" value="StringConstant &amp; Cond_constant now returns text node. Value of String type could be deprecated." />
+    <MESSAGE value="Remove unused types in Value.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove unused types in Value.java" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Main.java</url>
-          <line>57</line>
+          <line>58</line>
           <properties />
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Value.java</url>
-          <line>77</line>
+          <line>110</line>
           <properties />
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
-          <line>365</line>
+          <line>366</line>
           <properties />
           <option name="timeStamp" value="104" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
-          <line>369</line>
+          <line>370</line>
           <properties />
           <option name="timeStamp" value="105" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
-          <line>134</line>
+          <line>135</line>
           <properties />
           <option name="timeStamp" value="107" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
-          <line>47</line>
+          <line>48</line>
           <properties />
           <option name="timeStamp" value="111" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
-          <line>61</line>
+          <line>62</line>
           <properties />
           <option name="timeStamp" value="113" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
-          <line>445</line>
+          <line>448</line>
           <properties />
           <option name="timeStamp" value="114" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
-          <line>186</line>
+          <line>187</line>
           <properties />
           <option name="timeStamp" value="122" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
-          <line>72</line>
+          <line>73</line>
           <properties />
           <option name="timeStamp" value="123" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
-          <line>645</line>
+          <line>661</line>
           <properties />
           <option name="timeStamp" value="155" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
+          <line>431</line>
+          <properties />
+          <option name="timeStamp" value="159" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
+          <line>752</line>
+          <properties />
+          <option name="timeStamp" value="163" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Main.java</url>
+          <line>41</line>
+          <properties />
+          <option name="timeStamp" value="175" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/XQueryVisitor.java</url>
+          <line>484</line>
+          <properties />
+          <option name="timeStamp" value="192" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="159" />
+      <option name="time" value="193" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="ctx.rp(0).getText()" language="JAVA" />
-        <watch expression="ctx.getText()" language="JAVA" />
+        <watch expression="node.getTextContent()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>
@@ -1225,13 +1251,6 @@
     <entry file="file://$PROJECT_DIR$/src/com.example.mu/Main.java" />
     <entry file="file://$PROJECT_DIR$/src/com.example.mu/Mu.g4" />
     <entry file="file://$PROJECT_DIR$/src/com.example.mu/EvalVisitor.java" />
-    <entry file="file://$PROJECT_DIR$/j_caesar.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-10185">
-          <caret line="1" column="23" selection-start-line="1" selection-start-column="23" selection-end-line="1" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/example.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -1254,36 +1273,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/library/antlr-4.6-complete.jar!/org/antlr/v4/runtime/tree/AbstractParseTreeVisitor.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding>
-            <element signature="e#577#578#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/xqueries.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/XQueryLangParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-150">
-          <caret line="1161" column="17" selection-start-line="1161" selection-start-column="17" selection-end-line="1161" selection-end-column="17" />
           <folding />
         </state>
       </provider>
@@ -1296,41 +1289,81 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Value.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="91" column="21" selection-start-line="91" selection-start-column="11" selection-end-line="91" selection-end-column="21" />
+          <folding>
+            <element signature="e#1144#1145#0" expanded="true" />
+            <element signature="e#1188#1189#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/XQueryLang.g4">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="44" column="5" selection-start-line="44" selection-start-column="3" selection-end-line="44" selection-end-column="5" />
+        <state relative-caret-position="-286">
+          <caret line="82" column="31" selection-start-line="82" selection-start-column="31" selection-end-line="82" selection-end-column="31" />
           <folding>
             <element signature="e#0#5026#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/XQueryVisitor.java">
+    <entry file="file://$PROJECT_DIR$/src/XQueryLangParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5696">
-          <caret line="176" column="49" selection-start-line="176" selection-start-column="42" selection-end-line="176" selection-end-column="49" />
+        <state relative-caret-position="102">
+          <caret line="1743" column="0" selection-start-line="1743" selection-start-column="0" selection-end-line="1743" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#21159#21160#0" expanded="true" />
-            <element signature="e#21199#21200#0" expanded="true" />
+            <element signature="e#35725#35726#0" expanded="true" />
+            <element signature="e#35784#35785#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/library/antlr-4.6-complete.jar!/org/antlr/v4/runtime/tree/AbstractParseTreeVisitor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding>
+            <element signature="e#577#578#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/j_caesar.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-150">
+          <caret line="1" column="23" selection-start-line="1" selection-start-column="23" selection-end-line="1" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/playQuery.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="9" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
+        <state relative-caret-position="15">
+          <caret line="1" column="36" selection-start-line="0" selection-start-column="0" selection-end-line="8" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Value.java">
+    <entry file="file://$PROJECT_DIR$/src/XQueryVisitor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="661">
-          <caret line="107" column="5" selection-start-line="107" selection-start-column="5" selection-end-line="107" selection-end-column="5" />
-          <folding />
+        <state relative-caret-position="198">
+          <caret line="488" column="13" selection-start-line="488" selection-start-column="13" selection-end-line="488" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#21477#21478#0" expanded="true" />
+            <element signature="e#21517#21518#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -3,6 +3,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
@@ -39,7 +40,7 @@ public class Main {
 
  */
         Document doc = null;
-        for(Element element : results.asListElem()){
+        for(Node element : results.asListNode()){
             if(doc == null){
                 doc = element.getOwnerDocument();
             }

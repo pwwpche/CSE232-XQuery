@@ -1,4 +1,5 @@
 
+import org.antlr.v4.gui.SystemFontMetrics;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.*;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
 
-    private final Map<String, Value> mem = new HashMap<>();
+    private Map<String, Value> mem = new HashMap<>();
     private Value results = Value.VOID;
     private Document newDoc;
     @Override
@@ -428,13 +429,15 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitForStatement(XQueryLangParser.ForStatementContext ctx) {
-        List<String> addedVars = this.getVariables(ctx.forClause());
-        addedVars.addAll(this.getVariables(ctx.letClause()));
+        Map<String, Value> oldmem = mem;
+
+
         List<Node> finalResult = new ArrayList<>();
         this.forStatementDFS(ctx.forClause(), 0, finalResult);
 
         results = new Value(finalResult);
-        addedVars.forEach(mem::remove);
+
+        mem = oldmem;
         return results;
 
     }
@@ -475,6 +478,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         }else{                                  // Set up variables before processing.
             String variable = ctx.variable(varIdx).getText();
             Value value = this.visit(ctx.statement(varIdx));
+            if(varIdx == 2){
+                System.out.println(1);
+            }
             for(Node node : value.asListNode()){
                 List<Node> elemList = new ArrayList<>();
                 elemList.add(node);
@@ -521,8 +527,18 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value left = this.visit(ctx.condition(0));
         results = prevResult;
         Value right = this.visit(ctx.condition(1));
+        if(left.asBoolean()){
+            System.out.println(mem.get("$persona").asListNode().get(0).getTextContent());
+        }
 
-        assert(left.isBoolean() && right.isBoolean());
+        if(right.asBoolean()){
+            System.out.println(mem.get("$persona").asListNode().get(0).getTextContent());
+        }
+
+        if(left.asBoolean() && right.asBoolean()){
+            System.out.println(1);
+        }
+
         results = new Value(left.asBoolean() && right.asBoolean());
         return results;
     }
@@ -737,9 +753,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         assert(variables.size() == values.size());
         int size = values.size();
         for(int i = 0 ; i < size ; i++){
-            if(mem.containsKey(variables.get(i))){
-                throw new RuntimeException("Variable " + variables.get(i) + " already in scope.");
-            }
             mem.put(variables.get(i), values.get(i));
         }
 

@@ -87,7 +87,7 @@ attName
 //    | (Cond1) | Cond1 and Cond2 | Cond1 or Cond2 | not Cond1
 
 
-statement
+staiement
  : stringConstant                                                   #stat_constant
  | variable                                                         #stat_variable
  | ap                                                               #stat_ap
