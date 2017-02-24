@@ -344,23 +344,17 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value newVal = this.visit(ctx.statement());
         Node newNode = createElement(tagName);
 
-        if(newVal.isListElem()){
-            List<Node> childs = newVal.asListNode();
-            for(Node node : childs){
-                assert newNode != null;
-                Node importedNode = newDoc.importNode(node, true);
-                newNode.appendChild(importedNode);
-            }
-            childs.clear();
-            childs.add(newNode);
-            results = new Value(childs);
-        }else if(newVal.isString()){
+
+        List<Node> childs = newVal.asListNode();
+        for(Node node : childs){
             assert newNode != null;
-            newNode.setTextContent(newVal.asString());
-            List<Node> res = new ArrayList<>();
-            res.add(newNode);
-            results = new Value(res);
+            Node importedNode = newDoc.importNode(node, true);
+            newNode.appendChild(importedNode);
         }
+        childs.clear();
+        childs.add(newNode);
+        results = new Value(childs);
+
 
         return results;
     }
@@ -407,7 +401,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitStat_constant(XQueryLangParser.Stat_constantContext ctx) {
-        results = new Value(ctx.getText().replace("\"", ""));
+        List<Node> result = new ArrayList<>();
+        result.add(createTextNode(ctx.getText().replace("\"", "")));
+        results = new Value(result);
         return results;
     }
 
@@ -540,49 +536,39 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitCond_equal(XQueryLangParser.Cond_equalContext ctx) {
-        Value prevResult = results;
-        Value left = this.visit(ctx.statement(0));
-        results = prevResult;
-        Value right = this.visit(ctx.statement(1));
-
-
-        String leftStr, rightStr;
-        if(left.isString() || right.isString()){
-            if(left.isListNode()){
-                if(left.asListNode().size() == 1
-                        && left.asListNode().get(0).getNodeType() == Node.TEXT_NODE){
-                    leftStr = left.asListNode().get(0).getTextContent();
-                }else{
-                    results = new Value(false);
-                    return results;
+        Value prev = results;
+        Set<Node> res1 = new HashSet<>(this.visit(ctx.statement(0)).asListNode());
+        results = prev;
+        Set<Node> res2 = new HashSet<>(this.visit(ctx.statement(1)).asListNode());
+        boolean flag=false;
+        for (Node node1 : res1){
+            for (Node node2 : res2){
+                if (node1.isEqualNode(node2)){
+                    flag=true;
+                    break;
                 }
-            }else{
-                leftStr = left.asString();
             }
-
-            if(right.isListNode()){
-                if(right.asListNode().size() != 1
-                        || right.asListNode().get(0).getNodeType() != Node.TEXT_NODE){
-                    results = new Value(false);
-                    return results;
-                }else{
-                    rightStr = right.asListNode().get(0).getTextContent();
-                }
-            }else{
-                rightStr = right.asString();
-            }
-            results = new Value(leftStr.equals(rightStr));
-            return results;
-
         }
-        results = new Value(left.compareValue(right));
+        results = new Value(flag);
         return results;
+
     }
 
     @Override
     public Value visitCond_is(XQueryLangParser.Cond_isContext ctx) {
         //TODO: This is not implemented.
-        return super.visitCond_is(ctx);
+        Value prev = results;
+        Set<Node> res1 = new HashSet<>(this.visit(ctx.statement(0)).asListNode());
+        results = prev;
+        Set<Node> res2 = new HashSet<>(this.visit(ctx.statement(1)).asListNode());
+        res1.retainAll(res2);
+        if(res1.size() > 0){
+            results = new Value(true);
+        }else{
+            results = new Value(false);
+        }
+
+        return results;
     }
 
     @Override
