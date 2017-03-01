@@ -7,6 +7,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -39,14 +41,19 @@ public class Main {
 			serializer.serialize(dom);
 
  */
-        Document doc = null;
-        for(Node element : results.asListNode()){
-            if(doc == null){
-                doc = element.getOwnerDocument();
-            }
-            doc.appendChild(element);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document doc;
+        try {
+            doc = dbf.newDocumentBuilder().newDocument();
+        } catch (ParserConfigurationException ex) {
+            return ;
         }
-
+        Element ele = doc.createElement("ele");
+        for(Node element : results.asListNode()){
+            Node importedNode = doc.importNode(element, true);
+            ele.appendChild(importedNode);
+        }
+        doc.appendChild(ele);
         // write the content into xml file
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();

@@ -17,6 +17,14 @@
 //      http://stackoverflow.com/questions/29777778/antlr-4-5-mismatched-input-x-expecting-x
 //   ***********************
 
+
+/*
+    For how to implement methods after generating Q4 file:
+    Click XQueryVisitor-> Code -> Override Methods
+    Choose methods needed.
+*/
+
+
 /*
 
     Problem: A node is used in a different document than the one that created it.
@@ -87,7 +95,7 @@ attName
 //    | (Cond1) | Cond1 and Cond2 | Cond1 or Cond2 | not Cond1
 
 
-staiement
+statement
  : stringConstant                                                   #stat_constant
  | variable                                                         #stat_variable
  | ap                                                               #stat_ap
@@ -97,6 +105,7 @@ staiement
  | statement LSLASH LSLASH? rp                                      #stat_slash
  | forStatement                                                     #stat_for
  | letStatement                                                     #stat_let
+ | joinStatement                                                    #stat_join
  ;
 
 forStatement
@@ -105,6 +114,15 @@ forStatement
 
 letStatement
  : letClause statement
+ ;
+
+
+joinStatement
+ : JOIN LPAREN statement COMMA statement COMMA varListClause COMMA varListClause RPAREN
+ ;
+
+varListClause
+ : LBRACKET (NAMESTRING COMMA)* NAMESTRING RBRACKET
  ;
 
 forClause
@@ -160,6 +178,9 @@ RETURN
  : 'return'
  ;
 
+JOIN
+ : 'join'
+ ;
 
 IS
  : 'is'

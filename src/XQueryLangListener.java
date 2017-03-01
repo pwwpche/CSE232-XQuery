@@ -299,6 +299,18 @@ public interface XQueryLangListener extends ParseTreeListener {
 	 */
 	void exitStat_variable(XQueryLangParser.Stat_variableContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code stat_join}
+	 * labeled alternative in {@link XQueryLangParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStat_join(XQueryLangParser.Stat_joinContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stat_join}
+	 * labeled alternative in {@link XQueryLangParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStat_join(XQueryLangParser.Stat_joinContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code stat_paren}
 	 * labeled alternative in {@link XQueryLangParser#statement}.
 	 * @param ctx the parse tree
@@ -366,6 +378,26 @@ public interface XQueryLangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLetStatement(XQueryLangParser.LetStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link XQueryLangParser#joinStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoinStatement(XQueryLangParser.JoinStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link XQueryLangParser#joinStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoinStatement(XQueryLangParser.JoinStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link XQueryLangParser#varListClause}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarListClause(XQueryLangParser.VarListClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link XQueryLangParser#varListClause}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarListClause(XQueryLangParser.VarListClauseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link XQueryLangParser#forClause}.
 	 * @param ctx the parse tree

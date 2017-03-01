@@ -342,19 +342,20 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         if(!tagName.equals(ctx.tagName(1).getText().replace("/", ""))){
             throw new RuntimeException("Invalid tag name");
         }
-        Value newVal = this.visit(ctx.statement());
+        Value res = this.visit(ctx.statement());
         Node newNode = createElement(tagName);
 
 
-        List<Node> childs = newVal.asListNode();
-        for(Node node : childs){
+        List<Node> result = new ArrayList<>();
+
+        for(Node node : res.asListNode()){
             assert newNode != null;
             Node importedNode = newDoc.importNode(node, true);
             newNode.appendChild(importedNode);
         }
-        childs.clear();
-        childs.add(newNode);
-        results = new Value(childs);
+
+        result.add(newNode);
+        results = new Value(result);
 
 
         return results;
@@ -394,6 +395,22 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         results = value;
         return value;
     }
+
+    @Override
+    public Value visitStat_join(XQueryLangParser.Stat_joinContext ctx) {
+        return super.visitStat_join(ctx);
+    }
+
+    @Override
+    public Value visitJoinStatement(XQueryLangParser.JoinStatementContext ctx) {
+        return super.visitJoinStatement(ctx);
+    }
+
+    @Override
+    public Value visitVarListClause(XQueryLangParser.VarListClauseContext ctx) {
+        return super.visitVarListClause(ctx);
+    }
+
 
     @Override
     public Value visitStat_paren(XQueryLangParser.Stat_parenContext ctx) {
@@ -448,6 +465,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         return this.visit(ctx.statement());
     }
 
+
     @Override
     public Value visitForClause(XQueryLangParser.ForClauseContext ctx) {
         // According to what we do in forStatement, this part of code will never be reached.
@@ -478,12 +496,15 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         }else{                                  // Set up variables before processing.
             String variable = ctx.variable(varIdx).getText();
             Value value = this.visit(ctx.statement(varIdx));
-            if(varIdx == 2){
+            if(varIdx == 1 && value.asListNode().size() == 2){
                 System.out.println(1);
             }
             for(Node node : value.asListNode()){
                 List<Node> elemList = new ArrayList<>();
                 elemList.add(node);
+                if(node.getTextContent().equals("MARULLUS")){
+                    System.out.println("mar");
+                }
                 mem.put(variable, new Value(elemList));
                 forStatementDFS(ctx, varIdx + 1, finalResult);
             }
@@ -527,17 +548,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value left = this.visit(ctx.condition(0));
         results = prevResult;
         Value right = this.visit(ctx.condition(1));
-        if(left.asBoolean()){
-            System.out.println(mem.get("$persona").asListNode().get(0).getTextContent());
-        }
-
-        if(right.asBoolean()){
-            System.out.println(mem.get("$persona").asListNode().get(0).getTextContent());
-        }
-
-        if(left.asBoolean() && right.asBoolean()){
-            System.out.println(1);
-        }
 
         results = new Value(left.asBoolean() && right.asBoolean());
         return results;
@@ -553,13 +563,23 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     @Override
     public Value visitCond_equal(XQueryLangParser.Cond_equalContext ctx) {
         Value prev = results;
+
         Set<Node> res1 = new HashSet<>(this.visit(ctx.statement(0)).asListNode());
         results = prev;
         Set<Node> res2 = new HashSet<>(this.visit(ctx.statement(1)).asListNode());
         boolean flag=false;
         for (Node node1 : res1){
             for (Node node2 : res2){
-                if (node1.isEqualNode(node2)){
+                if(node1.getTextContent().equals("MARULLUS") && node2.getTextContent().equals("MARULLUS")){
+                    flag = true;
+                }
+                if (node1.getNodeType() == Node.TEXT_NODE && node2.getNodeType() == Node.TEXT_NODE){
+                    if (node1.getTextContent().equals(node2.getTextContent())){
+                        flag= true;
+                        break;
+                    }
+                }
+                else if (node1.isEqualNode(node2)){
                     flag=true;
                     break;
                 }

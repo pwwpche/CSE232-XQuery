@@ -315,6 +315,18 @@ public class XQueryLangBaseListener implements XQueryLangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStat_join(XQueryLangParser.Stat_joinContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStat_join(XQueryLangParser.Stat_joinContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStat_paren(XQueryLangParser.Stat_parenContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -382,6 +394,30 @@ public class XQueryLangBaseListener implements XQueryLangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLetStatement(XQueryLangParser.LetStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterJoinStatement(XQueryLangParser.JoinStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitJoinStatement(XQueryLangParser.JoinStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVarListClause(XQueryLangParser.VarListClauseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVarListClause(XQueryLangParser.VarListClauseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

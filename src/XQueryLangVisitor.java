@@ -181,6 +181,13 @@ public interface XQueryLangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStat_variable(XQueryLangParser.Stat_variableContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code stat_join}
+	 * labeled alternative in {@link XQueryLangParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStat_join(XQueryLangParser.Stat_joinContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code stat_paren}
 	 * labeled alternative in {@link XQueryLangParser#statement}.
 	 * @param ctx the parse tree
@@ -220,6 +227,18 @@ public interface XQueryLangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLetStatement(XQueryLangParser.LetStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link XQueryLangParser#joinStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinStatement(XQueryLangParser.JoinStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link XQueryLangParser#varListClause}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarListClause(XQueryLangParser.VarListClauseContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link XQueryLangParser#forClause}.
 	 * @param ctx the parse tree
