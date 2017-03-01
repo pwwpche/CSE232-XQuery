@@ -1,19 +1,17 @@
 <acts> {
-for $a in doc("j_caesar.xml")//ACT 
-let $b:=$a/SCENE/..
-where  empty ( for $sp in $b/SPEECH
-
-   				where ($sp/SPEAKER/text() = "MARULLUS" and $sp/../TITLE/text()="SCENE I.  Rome. A street.") 
- 				return <speaker> {
-				$sp/text()
-				}
-				</speaker> 
-				) 
-				and 
-				(not $b/TITLE/text() eq"ACT I" )
-
+for $tuple in join( for $a in doc("j_caesar.xml")//PERSONAE,
+                        $b in $a//PERSONA
+                    return <tuple>{ <a> {$a} </a>,<b> {$b} </b> }</tuple>,
+                    for $c in doc("j_caesar.xml")//ACT,
+                        $d in $c//SPEAKER
+                    where ($c/text() = "ACT I")
+                    return <tuple>{ <c> {$c} </c>,<d> {$d} </d> }</tuple>,
+                    [b], [d])
 return <act>
-		{$b/TITLE/text()}
+		{<title>{$tuple/a/PERSONAE/TITLE/text()}</title>,
+		 <person>{$tuple/d/text()}</person>,
+		 <acttitle>{$tuple/c/ACT/TITLE/text()}</acttitle>
+		}
 	   </act>
 }
 </acts>

@@ -1,5 +1,4 @@
 
-import org.antlr.v4.gui.SystemFontMetrics;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.*;
 
@@ -200,6 +199,15 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         return results;
     }
 
+
+    private List<Node> getDirectChildren(Node node){
+        List<Node> prev = new ArrayList<>();
+        List<Node> next = new ArrayList<>();
+        prev.add(node);
+        getChildren(prev, next, 1);
+        return next;
+    }
+
     private void getChildren(List<Node> prev, List<Node> next, int slashes){
         Set<Node> nextSet = new HashSet<>();
         for(Node node : prev){
@@ -398,17 +406,119 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitStat_join(XQueryLangParser.Stat_joinContext ctx) {
-        return super.visitStat_join(ctx);
+        return this.visit(ctx.joinStatement());
     }
 
     @Override
     public Value visitJoinStatement(XQueryLangParser.JoinStatementContext ctx) {
-        return super.visitJoinStatement(ctx);
+        Value prev = results;
+        Value left = this.visit(ctx.statement(0));
+        results = prev;
+        Value right = this.visit(ctx.statement(1));
+
+        List<String> leftVars = new ArrayList<>();
+        List<String> rightVars = new ArrayList<>();
+
+        leftVars.addAll(ctx.varListClause(0).NAMESTRING().stream().map(ParseTree::getText).collect(Collectors.toList()));
+        rightVars.addAll(ctx.varListClause(1).NAMESTRING().stream().map(ParseTree::getText).collect(Collectors.toList()));
+
+        Set<Node> nextLeft = new HashSet<>();
+        Set<Node> nextRight = new HashSet<>();
+        nextLeft.addAll(left.asListElem());
+        nextRight.addAll(right.asListElem());
+
+        List<Node> result = new ArrayList<>();
+        results = new Value(result);
+        Map<NodeWrapper, ArrayList<Node>> candidates;
+        for(int i = 0 , size = (leftVars.size() < rightVars.size() ? leftVars.size() : rightVars.size());
+                i < size ; i++){
+
+            String tagLeft = leftVars.get(i);
+            String tagRight = rightVars.get(i);
+            Set<Node> tempLeft = new HashSet<>();
+            Set<Node> tempRight = new HashSet<>();
+            // Construct candidate set of right
+            // All nodes in this set has a child node with tag `tagRight`
+            candidates = new HashMap<>();
+            for(Node rightNode : nextRight){
+                //Get all children of this node.
+                List<Node> next = getDirectChildren(rightNode);
+
+                //Look for the element with current tag name
+                for(Node rightChild : next){
+                    if(rightChild.getNodeType() == Node.ELEMENT_NODE &&
+                            ((Element)rightChild).getTagName().equals(tagRight)){
+                        NodeWrapper nodeWrapper = new NodeWrapper(rightChild);
+                        if(!candidates.containsKey(nodeWrapper)){
+                            candidates.put(nodeWrapper, new ArrayList<>());
+                        }
+                        candidates.get(nodeWrapper).add(rightNode);
+                        break;
+                    }
+                }
+            }
+
+            // Scan left one by one
+            // If left has a children that is in set<right> :
+            //    add left and right to candidate for next loop
+            for(Node leftNode : nextLeft){
+                //Get all children of this node.
+                List<Node> next = getDirectChildren(leftNode);
+
+                //Look for the element with current tag name
+                for(Node leftChild : next){
+                    if(leftChild.getNodeType() == Node.ELEMENT_NODE &&
+                            ((Element)leftChild).getTagName().equals(tagLeft)){
+                        NodeWrapper leftWrapper = new NodeWrapper(leftChild);
+                        if(candidates.containsKey(leftWrapper)){
+                            tempLeft.add(leftNode);
+                            tempRight.addAll(candidates.get(leftWrapper));
+
+                            if(i == size - 1){
+
+                                Element element = createElement("tuple");
+                                assert element != null;
+                                List<Node> resLeftChild = getDirectChildren(leftNode);
+                                for (Node resNode : resLeftChild){
+                                    Node newNode = resNode;
+                                    element.appendChild(newNode);
+                                }
+                                for(Node tempRightNode : tempRight){
+                                    Element newElement = element;
+                                    List<Node> resRightChild = getDirectChildren(tempRightNode);
+                                    for (Node resNode : resRightChild){
+                                        Node newNode = resNode;
+                                        element.appendChild(newNode);
+                                    }
+                                    result.add(newElement);
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+
+
+            }
+            nextLeft = tempLeft;
+            nextRight = tempRight;
+
+            //Produce result in the last iteration.
+
+            if(i == size - 1){
+                results = new Value(result);
+            }
+        }
+
+        return results;
+
+
     }
 
     @Override
     public Value visitVarListClause(XQueryLangParser.VarListClauseContext ctx) {
-        return super.visitVarListClause(ctx);
+        assert(false);
+        return new Value(false);
     }
 
 
@@ -502,9 +612,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             for(Node node : value.asListNode()){
                 List<Node> elemList = new ArrayList<>();
                 elemList.add(node);
-                if(node.getTextContent().equals("MARULLUS")){
-                    System.out.println("mar");
-                }
                 mem.put(variable, new Value(elemList));
                 forStatementDFS(ctx, varIdx + 1, finalResult);
             }
