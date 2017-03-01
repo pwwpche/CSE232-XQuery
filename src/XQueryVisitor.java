@@ -476,21 +476,20 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
                             if(i == size - 1){
 
-                                Element element = createElement("tuple");
-                                assert element != null;
-                                List<Node> resLeftChild = getDirectChildren(leftNode);
-                                for (Node resNode : resLeftChild){
-                                    Node newNode = resNode;
-                                    element.appendChild(newNode);
-                                }
-                                for(Node tempRightNode : tempRight){
-                                    Element newElement = element;
-                                    List<Node> resRightChild = getDirectChildren(tempRightNode);
-                                    for (Node resNode : resRightChild){
-                                        Node newNode = resNode;
+                                for(Node tempRightNode : candidates.get(leftWrapper)){
+                                    Element element = createElement("tuple");
+                                    assert element != null;
+                                    List<Node> resLeftChild = getDirectChildren(leftNode);
+                                    for (Node resNode : resLeftChild){
+                                        Node newNode = resNode.cloneNode(true);
                                         element.appendChild(newNode);
                                     }
-                                    result.add(newElement);
+                                    List<Node> resRightChild = getDirectChildren(tempRightNode);
+                                    for (Node resNode : resRightChild){
+                                        Node newNode = resNode.cloneNode(true);
+                                        element.appendChild(newNode);
+                                    }
+                                    result.add(element);
                                 }
                             }
                             break;
