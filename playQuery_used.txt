@@ -17,3 +17,30 @@ return <act>
 	   </act>
 }
 </acts>
+
+==============
+
+<acts> {
+for $tuple in join( for $a in doc("j_caesar.xml")//PERSONAE,
+                        $b in $a//PERSONA
+                    return <tuple>{ <a> {$a} </a>,<b> {$b} </b> }</tuple>,
+                    for $c in doc("j_caesar.xml")//ACT,
+                        $d in $c//SPEAKER
+                    where ($c/TITLE/text() = "ACT I")
+                    return <tuple>{ <c> {$c} </c>,<d> {$d} </d> }</tuple>,
+                    [b], [d])
+return <act>
+		{<title>{$tuple/a/PERSONAE/TITLE/text()}</title>,
+		 <person>{$tuple/d/SPEAKER/text()}</person>,
+		 <acttitle>{$tuple/c/ACT/TITLE/text()}</acttitle>
+		}
+	   </act>
+}
+</acts>
+
+==============
+
+
+
+
+
