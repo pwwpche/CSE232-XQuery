@@ -430,6 +430,29 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         List<Node> result = new ArrayList<>();
         results = new Value(result);
         Map<NodeWrapper, ArrayList<Node>> candidates;
+
+        //No join equations, so just do cartesian product.
+        if(leftVars.size() == 0 || rightVars.size() == 0){
+            for(Node leftNode : nextLeft){
+                List<Node> leftChildren = getDirectChildren(leftNode);
+                for(Node rightNode : nextRight){
+                    List<Node> rightChildren = getDirectChildren(rightNode);
+                    Element element = createElement("tuple");
+                    assert element != null;
+
+                    for(Node leftChild : leftChildren){
+                        Node child = leftChild.cloneNode(true);
+                        element.appendChild(child);
+                    }
+                    for(Node rightChild : rightChildren){
+                        Node child = rightChild.cloneNode(true);
+                        element.appendChild(child);
+                    }
+                    result.add(element);
+                }
+            }
+        }
+
         for(int i = 0 , size = (leftVars.size() < rightVars.size() ? leftVars.size() : rightVars.size());
                 i < size ; i++){
 
@@ -442,10 +465,10 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             candidates = new HashMap<>();
             for(Node rightNode : nextRight){
                 //Get all children of this node.
-                List<Node> next = getDirectChildren(rightNode);
+                List<Node> rightChilds = getDirectChildren(rightNode);
 
                 //Look for the element with current tag name
-                for(Node rightChild : next){
+                for(Node rightChild : rightChilds){
                     if(rightChild.getNodeType() == Node.ELEMENT_NODE &&
                             ((Element)rightChild).getTagName().equals(tagRight)){
                         NodeWrapper nodeWrapper = new NodeWrapper(rightChild);
@@ -463,20 +486,26 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             //    add left and right to candidate for next loop
             for(Node leftNode : nextLeft){
                 //Get all children of this node.
-                List<Node> next = getDirectChildren(leftNode);
+                List<Node> leftChilds = getDirectChildren(leftNode);
 
                 //Look for the element with current tag name
-                for(Node leftChild : next){
+                for(Node leftChild : leftChilds){
                     if(leftChild.getNodeType() == Node.ELEMENT_NODE &&
                             ((Element)leftChild).getTagName().equals(tagLeft)){
                         NodeWrapper leftWrapper = new NodeWrapper(leftChild);
                         if(candidates.containsKey(leftWrapper)){
                             tempLeft.add(leftNode);
-                            tempRight.addAll(candidates.get(leftWrapper));
+                            ArrayList<Node> candidatesRight = candidates.get(leftWrapper);
+
+                            for(Node node : candidatesRight){
+                                if(node.isEqualNode(leftNode)){
+                                    tempRight.add(node);
+                                }
+                            }
 
                             if(i == size - 1){
 
-                                for(Node tempRightNode : candidates.get(leftWrapper)){
+                                for(Node tempRightNode : tempRight){
                                     Element element = createElement("tuple");
                                     assert element != null;
                                     List<Node> resLeftChild = getDirectChildren(leftNode);
@@ -536,7 +565,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitStat_slash(XQueryLangParser.Stat_slashContext ctx) {
-        results = this.visit(ctx.statement());
 
         List<Node> prev = results.asListNode();
         List<Node> next = new ArrayList<>();
