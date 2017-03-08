@@ -58,3 +58,36 @@ return
 
 
 ==============
+
+for $tuple in join (
+for $b in doc("j_caesar.xml")//PERSONAE,
+$tb in $b/PERSONA
+return <tuple> {<b>{$b} </b>,
+<tb>{$tb} </tb>
+} </tuple>
+,
+for $a in doc("j_caesar.xml")//PERSONAE,
+$ta in $a/PERSONA
+return <tuple> {<a>{$a} </a>,
+<ta>{$ta} </ta>
+} </tuple>
+,
+[tb], [ta])
+return <result>{<title>{$tuple/b/*/TITLE}</title>,<name1>{$tuple/tb/*/text()}</name1>,<name2>{$tuple/ta/*/text()}</name2>}</result>
+
+=============
+
+
+
+
+for $b in doc("j_caesar.xml")//PERSONAE,
+    $a in doc("j_caesar.xml")//PERSONAE,
+    $tb in $b/PERSONA,
+    $ta in $a/PERSONA
+where $ta eq $tb
+return
+    <result>{
+        <title>{$b/TITLE}</title>,
+        <name1>{$tb/text()}</name1>,
+        <name2>{$ta/text()}</name2>
+    }</result>

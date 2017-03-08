@@ -512,18 +512,19 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
                         if(candidates.containsKey(leftWrapper)){
                             tempLeft.add(leftNode);
                             ArrayList<Node> candidatesRight = candidates.get(leftWrapper);
+                            ArrayList<Node> equalRight = new ArrayList<>();
 
                             for(Node node : candidatesRight){
                                 Node leftContent = leftChild.getFirstChild();
                                 Node rightContent = getDirectChildrenByTagName(node, tagRight).getFirstChild();
                                 if(leftContent.isEqualNode(rightContent)){
-                                    tempRight.add(node);
+                                    equalRight.add(node);
                                 }
                             }
 
                             if(i == size - 1){
 
-                                for(Node tempRightNode : tempRight){
+                                for(Node tempRightNode : equalRight){
                                     Element element = createElement("tuple");
                                     assert element != null;
                                     List<Node> resLeftChild = getDirectChildren(leftNode);
@@ -539,6 +540,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
                                     result.add(element);
                                 }
                             }
+                            tempRight.addAll(equalRight);
                             break;
                         }
                     }
