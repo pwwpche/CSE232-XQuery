@@ -165,7 +165,8 @@ class XQueryRewriter {
                 }else{
                     groupIdx = varToGroup.get(eqStr2);
                 }
-                groupWhere.get(groupIdx).add(condition.getText());
+                String addedText = condition.getText().replaceAll("\\$([A-Za-z0-9_]+)", "\\$$1\\/text\\(\\)");
+                groupWhere.get(groupIdx).add(addedText);
             }
         }
 

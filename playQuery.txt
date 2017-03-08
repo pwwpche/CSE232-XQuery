@@ -1,4 +1,5 @@
 for $tuple in join (
+join (
 for $b in doc("j_caesar.xml")//PERSONAE,
 $tb in $b/PERSONA
 return <tuple> {<b>{$b} </b>,
@@ -6,10 +7,18 @@ return <tuple> {<b>{$b} </b>,
 } </tuple>
 ,
 for $a in doc("j_caesar.xml")//PERSONAE,
-$ta in $a/PERSONA
+$ta in $a/PERSONA,
+$tc in $a/PERSONA
+where $tc/text()="A Soothsayer"
 return <tuple> {<a>{$a} </a>,
-<ta>{$ta} </ta>
+<ta>{$ta} </ta>,
+<tc>{$tc} </tc>
 } </tuple>
 ,
-[tb], [ta])
-return <result>{<title>{$tuple/b/*/TITLE}</title>,<name1>{$tuple/tb/*/text()}</name1>,<name2>{$tuple/ta/*/text()}</name2>}</result>
+[tb, tb], [ta, tc]),
+for $c in doc("j_caesar.xml")//PERSONAE
+return <tuple> {<c>{$c} </c>
+} </tuple>
+,
+[], [])
+return <result>{<title>{$tuple/b/*/TITLE}</title>,<name1>{$tuple/tb/*/text()}</name1>,<name2>{$tuple/ta/*/text()}</name2>,<name3>{$tuple/tc/*/text()}</name3>}</result>

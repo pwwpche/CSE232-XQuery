@@ -13,7 +13,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
+import java.io.*;
 
 /**
  * Created by liuche on 1/19/17.
@@ -25,9 +25,14 @@ public class Main {
         XQueryLangParser.StatementContext statement = parser.statement();
 
 
-//        XQueryRewriter rewriter = new XQueryRewriter();
-//        rewriter.construct(statement);
-//        System.out.println(rewriter.output());
+        XQueryRewriter rewriter = new XQueryRewriter();
+        rewriter.construct(statement);
+
+        File fout = new File("rewrite.txt");
+        FileOutputStream fos = new FileOutputStream(fout);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+        bw.write(rewriter.output());
+        bw.close();
 
         XQueryVisitor visitor = new XQueryVisitor();
         Value results = visitor.visit(statement);
