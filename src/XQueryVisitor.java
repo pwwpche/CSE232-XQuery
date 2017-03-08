@@ -208,6 +208,21 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         return next;
     }
 
+
+    private Node getDirectChildrenByTagName(Node node, String tagName){
+        List<Node> prev = getDirectChildren(node);
+        List<Node> res = new ArrayList<>();
+        for(Node child : prev){
+            if(child.getNodeType() == Node.ELEMENT_NODE){
+                if(((Element)child).getTagName().equals(tagName)){
+                    res.add(child);
+                }
+            }
+        }
+        assert res.size() == 1;
+        return res.get(0);
+    }
+
     private void getChildren(List<Node> prev, List<Node> next, int slashes){
         Set<Node> nextSet = new HashSet<>();
         for(Node node : prev){
@@ -492,13 +507,16 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
                 for(Node leftChild : leftChilds){
                     if(leftChild.getNodeType() == Node.ELEMENT_NODE &&
                             ((Element)leftChild).getTagName().equals(tagLeft)){
+
                         NodeWrapper leftWrapper = new NodeWrapper(leftChild);
                         if(candidates.containsKey(leftWrapper)){
                             tempLeft.add(leftNode);
                             ArrayList<Node> candidatesRight = candidates.get(leftWrapper);
 
                             for(Node node : candidatesRight){
-                                if(node.isEqualNode(leftNode)){
+                                Node leftContent = leftChild.getFirstChild();
+                                Node rightContent = getDirectChildrenByTagName(node, tagRight).getFirstChild();
+                                if(leftContent.isEqualNode(rightContent)){
                                     tempRight.add(node);
                                 }
                             }
@@ -545,7 +563,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitVarListClause(XQueryLangParser.VarListClauseContext ctx) {
-        assert(false);
+        // This function should not be visited.
         return new Value(false);
     }
 
@@ -565,6 +583,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitStat_slash(XQueryLangParser.Stat_slashContext ctx) {
+        results = this.visit(ctx.statement());
 
         List<Node> prev = results.asListNode();
         List<Node> next = new ArrayList<>();
@@ -633,9 +652,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         }else{                                  // Set up variables before processing.
             String variable = ctx.variable(varIdx).getText();
             Value value = this.visit(ctx.statement(varIdx));
-            if(varIdx == 1 && value.asListNode().size() == 2){
-                System.out.println(1);
-            }
             for(Node node : value.asListNode()){
                 List<Node> elemList = new ArrayList<>();
                 elemList.add(node);

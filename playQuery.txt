@@ -1,11 +1,15 @@
-for $b in doc("input")/book,
-    $a in doc("input")/entry,
-    $tb in $b/title,
-    $ta in $a/title
-where $tb eq $ta
-return
-    <book-with-prices>
-    { $tb,
-    <price-review>{ $a/price }</price-review>,
-    <price>{ $b/price }</price> }
-    </book-with-prices>
+for $tuple in join (
+for $b in doc("j_caesar.xml")//PERSONAE,
+$tb in $b/PERSONA
+return <tuple> {<b>{$b} </b>,
+<tb>{$tb} </tb>
+} </tuple>
+,
+for $a in doc("j_caesar.xml")//PERSONAE,
+$ta in $a/PERSONA
+return <tuple> {<a>{$a} </a>,
+<ta>{$ta} </ta>
+} </tuple>
+,
+[tb], [ta])
+return <result>{<title>{$tuple/b/*/TITLE}</title>,<name1>{$tuple/tb/*/text()}</name1>,<name2>{$tuple/ta/*/text()}</name2>}</result>

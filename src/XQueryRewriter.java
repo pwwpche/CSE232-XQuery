@@ -47,7 +47,7 @@ import java.util.*;
 *
 *
 * */
-public class XQueryRewriter {
+class XQueryRewriter {
 
     private HashMap<Integer, ArrayList< Pair<String, String> > >groupVars;
     private HashMap<Integer, ArrayList<String >> groupWhere;
@@ -64,7 +64,7 @@ public class XQueryRewriter {
         edgeToEqualPair = new HashMap<>();
     }
 
-    public void construct(XQueryLangParser.StatementContext statement){
+    void construct(XQueryLangParser.StatementContext statement){
         if( !(statement instanceof XQueryLangParser.Stat_forContext) ){
             return ;
         }
@@ -172,13 +172,12 @@ public class XQueryRewriter {
 
     }
 
-    public String output(){
+    String output(){
         if(groupVars.size() < 1){
             return "Can't peform join rewriting.";
         }
 
         String initFor = "for $tuple in ";
-        HashMap<Pair<Integer, Integer>, ArrayList<Pair<String, String>> > oldEdgeToEquaPair = edgeToEqualPair;
 
         //Most naive rewriting
         String prevJoin = getGroupFWR(0);

@@ -25,36 +25,36 @@ public class Main {
         XQueryLangParser.StatementContext statement = parser.statement();
 
 
-        XQueryRewriter rewriter = new XQueryRewriter();
-        rewriter.construct(statement);
-        System.out.println(rewriter.output());
+//        XQueryRewriter rewriter = new XQueryRewriter();
+//        rewriter.construct(statement);
+//        System.out.println(rewriter.output());
 
-        //XQueryVisitor visitor = new XQueryVisitor();
-        //Value results = visitor.visit(statement);
+        XQueryVisitor visitor = new XQueryVisitor();
+        Value results = visitor.visit(statement);
 
-//
-//        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//        Document doc;
-//        try {
-//            doc = dbf.newDocumentBuilder().newDocument();
-//        } catch (ParserConfigurationException ex) {
-//            return ;
-//        }
-//        Element ele = doc.createElement("ele");
-//        for(Node element : results.asListNode()){
-//            Node importedNode = doc.importNode(element, true);
-//            ele.appendChild(importedNode);
-//        }
-//        doc.appendChild(ele);
-//        // write the content into xml file
-//        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-//        Transformer transformer = transformerFactory.newTransformer();
-//        DOMSource source = new DOMSource(doc);
-//        StreamResult result = new StreamResult(new File("/Users/liuche/IdeaProjects/XQuery/xqueries.xml"));
-//
-//        transformer.transform(source, result);
-//
-//        System.out.println("File saved!");
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document doc;
+        try {
+            doc = dbf.newDocumentBuilder().newDocument();
+        } catch (ParserConfigurationException ex) {
+            return ;
+        }
+        Element ele = doc.createElement("ele");
+        for(Node element : results.asListNode()){
+            Node importedNode = doc.importNode(element, true);
+            ele.appendChild(importedNode);
+        }
+        doc.appendChild(ele);
+        // write the content into xml file
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File("/Users/liuche/IdeaProjects/XQuery/xqueries.xml"));
+
+        transformer.transform(source, result);
+
+        System.out.println("File saved!");
         return ;
     }
 }
