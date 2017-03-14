@@ -55,6 +55,7 @@ class XQueryRewriter {
     private String finalReturnString;
 
     private HashMap<String, Integer> varToGroup;
+
     private HashMap<Pair<Integer, Integer>, ArrayList<Pair<String, String>> > edgeToEqualPair;
 
     XQueryRewriter(){
@@ -105,13 +106,6 @@ class XQueryRewriter {
 
         //Analyse RETURN clause
         finalReturnString = returnClauseContext.getText().replace("return", "return ");
-//        for (Object entry : varToGroup.entrySet()) {
-//            String varName = ((Map.Entry<String, Integer>)entry).getKey();
-//            if (finalReturnString.contains(varName)) {
-//                String newVarName = "$tuple/" + varName.substring(1) + "/*";
-//                finalReturnString = finalReturnString.replace(varName, newVarName);
-//            }
-//        }
         finalReturnString = finalReturnString.replaceAll("\\$([A-Za-z0-9_]+)", "\\$tuple/$1/*");
 
 
@@ -163,8 +157,9 @@ class XQueryRewriter {
                 }else{
                     groupIdx = varToGroup.get(eqStr2);
                 }
-                String addedText = condition.getText().replaceAll("\\$([A-Za-z0-9_]+)", "\\$$1\\/text\\(\\)");
-                groups.get(groupIdx).whereStats.add(addedText);
+                //String addedText = condition.getText().replaceAll("\\$([A-Za-z0-9_]+)", "\\$$1\\/text\\(\\)");
+                //groups.get(groupIdx).whereStats.add(addedText);
+                groups.get(groupIdx).whereStats.add(condition.getText());
             }
         }
 

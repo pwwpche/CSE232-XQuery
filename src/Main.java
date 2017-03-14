@@ -23,7 +23,8 @@ public class Main {
         XQueryLangLexer lexer = new XQueryLangLexer(new ANTLRFileStream("/Users/liuche/IdeaProjects/XQuery/playQuery.txt"));
         XQueryLangParser parser = new XQueryLangParser(new CommonTokenStream(lexer));
         XQueryLangParser.StatementContext statement = parser.statement();
-
+//        XQueryVisitor visitor = new XQueryVisitor();
+//        Value results = visitor.visit(statement);
 
         XQueryRewriter rewriter = new XQueryRewriter();
         rewriter.construct(statement);
