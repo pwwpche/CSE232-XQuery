@@ -43,14 +43,15 @@ import java.util.*;
    set up a group for it. And if there are other variables that references this var,
    categorize them into the same group.
 
-   If there are "Where" clauses that belongs to
+   If there are "Where" clauses that belongs to only one join group, add it to that group.
+   If some WhereClause joins different groups, add an edge between them.
 *
 *
 * */
 class XQueryRewriter {
 
-    private HashMap<Integer, ArrayList< Pair<String, String> > >groupVars;
-    private HashMap<Integer, ArrayList<String >> groupWhere;
+    private ArrayList<JoinSlice> groups;
+
     private String finalReturnString;
 
     private HashMap<String, Integer> varToGroup;
@@ -58,9 +59,8 @@ class XQueryRewriter {
 
     XQueryRewriter(){
         finalReturnString = "";
-        groupVars = new HashMap<>();
+        groups = new ArrayList<>();
         varToGroup = new HashMap<>();
-        groupWhere = new HashMap<>();
         edgeToEqualPair = new HashMap<>();
     }
 
@@ -86,17 +86,15 @@ class XQueryRewriter {
             Integer groupIdx;
             if(statementStr.startsWith("doc")){
                 // Statement contains 'DOC' as prefix. This is a new group. Create one.
-                groupIdx = groupVars.size();
-                groupVars.put(groupIdx, new ArrayList<>());
-                groupWhere.put(groupIdx, new ArrayList<>());
-
+                groupIdx = groups.size();
+                groups.add(new JoinSlice(groupIdx));
             }else{
                 // Look for which group current variable belongs to by looking at its prefix variable.
                 int slashPos = statementStr.indexOf('/') == -1 ? statementStr.length() : statementStr.indexOf('/');
                 String prefixVar = statementStr.substring(0, slashPos);
                 groupIdx = varToGroup.get(prefixVar);
             }
-            groupVars.get(groupIdx).add(varStatement);
+            groups.get(groupIdx).vars.add(varStatement);
             varToGroup.put(varName, groupIdx);
         }
 
@@ -144,7 +142,7 @@ class XQueryRewriter {
 
                 // First check if this join is for the same group.
                 if(varIdx1.equals(varIdx2)){
-                    groupWhere.get(varIdx1).add(condition.getText());
+                    groups.get(varIdx1).whereStats.add(condition.getText());
                 }else{
                     //If end of join edges belongs to different group,
                     // then add an edge between these two groups.
@@ -166,7 +164,7 @@ class XQueryRewriter {
                     groupIdx = varToGroup.get(eqStr2);
                 }
                 String addedText = condition.getText().replaceAll("\\$([A-Za-z0-9_]+)", "\\$$1\\/text\\(\\)");
-                groupWhere.get(groupIdx).add(addedText);
+                groups.get(groupIdx).whereStats.add(addedText);
             }
         }
 
@@ -174,7 +172,7 @@ class XQueryRewriter {
     }
 
     String output(){
-        if(groupVars.size() < 1){
+        if(groups.size() < 1){
             return "Can't peform join rewriting.";
         }
 
@@ -182,7 +180,8 @@ class XQueryRewriter {
 
         //Most naive rewriting
         String prevJoin = getGroupFWR(0);
-        for(int end = 1, size = groupVars.size() ; end < size ; end++){
+
+        for(int end = 1, size = groups.size() ; end < size ; end++){
             ArrayList<Pair<String, String>> merged = new ArrayList<>();
             for(int start = 0 ; start < end ; start++){
                 Pair<Integer, Integer> edge = Pair.mkPair(start, end);
@@ -220,7 +219,7 @@ class XQueryRewriter {
 
         //Process FOR and Return
         String result = "for ", returnString = "";
-        ArrayList<Pair<String, String>> varStatements = groupVars.get(group);
+        ArrayList<Pair<String, String>> varStatements = groups.get(group).vars;
         for(Pair<String, String> entry : varStatements){
             String varName = entry.getV0();
             String varNoPrefix = varName.substring(1, varName.length());
@@ -235,7 +234,7 @@ class XQueryRewriter {
         returnString += "\n";
 
         //Add addition WHERE if exists
-        ArrayList<String> whereClauses = groupWhere.get(group);
+        ArrayList<String> whereClauses = groups.get(group).whereStats;
         if(whereClauses.size() > 0){
             result += "where ";
             for(String entry : whereClauses){
