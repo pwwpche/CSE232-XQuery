@@ -31,7 +31,7 @@ public class Main {
         File fout = new File("rewrite.txt");
         FileOutputStream fos = new FileOutputStream(fout);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-        bw.write(rewriter.output());
+        bw.write(rewriter.output_better());
         bw.close();
 
         XQueryLangLexer lexer2 = new XQueryLangLexer(new ANTLRFileStream("/Users/liuche/IdeaProjects/XQuery/rewrite.txt"));

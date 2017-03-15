@@ -239,6 +239,28 @@ public interface XQueryLangListener extends ParseTreeListener {
 	 */
 	void exitAttName(XQueryLangParser.AttNameContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code stat_commaa}
+	 * labeled alternative in {@link XQueryLangParser#commaStat}.
+	 * @param ctx the parse tree
+	 */
+	void enterStat_commaa(XQueryLangParser.Stat_commaaContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stat_commaa}
+	 * labeled alternative in {@link XQueryLangParser#commaStat}.
+	 * @param ctx the parse tree
+	 */
+	void exitStat_commaa(XQueryLangParser.Stat_commaaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link XQueryLangParser#slashStat}.
+	 * @param ctx the parse tree
+	 */
+	void enterSlashStat(XQueryLangParser.SlashStatContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link XQueryLangParser#slashStat}.
+	 * @param ctx the parse tree
+	 */
+	void exitSlashStat(XQueryLangParser.SlashStatContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code stat_tag}
 	 * labeled alternative in {@link XQueryLangParser#statement}.
 	 * @param ctx the parse tree

@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -40,28 +41,28 @@ import java.util.*;
    Basic Idea:
 
    For each variable definition like VARNAME in AP,
-   set up a group for it. And if there are other variables that references this var,
-   categorize them into the same group.
+   set up a table for it. And if there are other variables that references this var,
+   categorize them into the same table.
 
-   If there are "Where" clauses that belongs to only one join group, add it to that group.
-   If some WhereClause joins different groups, add an edge between them.
+   If there are "Where" clauses that belongs to only one join table, add it to that table.
+   If some WhereClause joins different tables, add an edge between them.
 *
 *
 * */
 class XQueryRewriter {
 
-    private ArrayList<JoinSlice> groups;
+    private ArrayList<JoinTable> tables;
 
     private String finalReturnString;
 
-    private HashMap<String, Integer> varToGroup;
+    private HashMap<String, Integer> varToTable;
 
     private HashMap<Pair<Integer, Integer>, ArrayList<Pair<String, String>> > edgeToEqualPair;
 
     XQueryRewriter(){
         finalReturnString = "";
-        groups = new ArrayList<>();
-        varToGroup = new HashMap<>();
+        tables = new ArrayList<>();
+        varToTable = new HashMap<>();
         edgeToEqualPair = new HashMap<>();
     }
 
@@ -83,20 +84,20 @@ class XQueryRewriter {
             // Combine variable with its corresponding statement definition.
             Pair<String, String> varStatement = Pair.mkPair(varName, statementStr);
 
-            // Get which group this variable should belong to.
-            Integer groupIdx;
+            // Get which table this variable should belong to.
+            Integer tableIdx;
             if(statementStr.startsWith("doc")){
-                // Statement contains 'DOC' as prefix. This is a new group. Create one.
-                groupIdx = groups.size();
-                groups.add(new JoinSlice(groupIdx));
+                // Statement contains 'DOC' as prefix. This is a new table. Create one.
+                tableIdx = tables.size();
+                tables.add(new JoinTable(tableIdx));
             }else{
-                // Look for which group current variable belongs to by looking at its prefix variable.
+                // Look for which table current variable belongs to by looking at its prefix variable.
                 int slashPos = statementStr.indexOf('/') == -1 ? statementStr.length() : statementStr.indexOf('/');
                 String prefixVar = statementStr.substring(0, slashPos);
-                groupIdx = varToGroup.get(prefixVar);
+                tableIdx = varToTable.get(prefixVar);
             }
-            groups.get(groupIdx).vars.add(varStatement);
-            varToGroup.put(varName, groupIdx);
+            tables.get(tableIdx).vars.add(varStatement);
+            varToTable.put(varName, tableIdx);
         }
 
 
@@ -123,8 +124,8 @@ class XQueryRewriter {
             String eqStr2 = equalContext.statement(1).getText();
             if(eqStr1.startsWith("$") && eqStr2.startsWith("$")){
                 //Join these two vars together.
-                Integer varIdx1 = varToGroup.get(eqStr1);
-                Integer varIdx2 = varToGroup.get(eqStr2);
+                Integer varIdx1 = varToTable.get(eqStr1);
+                Integer varIdx2 = varToTable.get(eqStr2);
 
                 //Swap indices so smaller goes before larger one.
                 if(varIdx1 > varIdx2){
@@ -134,12 +135,12 @@ class XQueryRewriter {
                 Pair<Integer, Integer> edge = Pair.mkPair(varIdx1, varIdx2);
                 Pair<String, String> eqVars = Pair.mkPair(eqStr1, eqStr2);
 
-                // First check if this join is for the same group.
+                // First check if this join is for the same table.
                 if(varIdx1.equals(varIdx2)){
-                    groups.get(varIdx1).whereStats.add(condition.getText());
+                    tables.get(varIdx1).whereStats.add(condition.getText().replace("eq", " eq "));
                 }else{
-                    //If end of join edges belongs to different group,
-                    // then add an edge between these two groups.
+                    //If end of join edges belongs to different table,
+                    // then add an edge between these two tables.
                     if(!edgeToEqualPair.containsKey(edge)){
                         edgeToEqualPair.put(edge, new ArrayList<>());
                     }
@@ -150,16 +151,16 @@ class XQueryRewriter {
 
             }else{
                 // This is a "$variable = Constant" statement.
-                // No need to add join edges between groups.
-                Integer groupIdx;
+                // No need to add join edges between tables.
+                Integer tableIdx;
                 if(eqStr1.startsWith("$")){
-                    groupIdx = varToGroup.get(eqStr1);
+                    tableIdx = varToTable.get(eqStr1);
                 }else{
-                    groupIdx = varToGroup.get(eqStr2);
+                    tableIdx = varToTable.get(eqStr2);
                 }
                 //String addedText = condition.getText().replaceAll("\\$([A-Za-z0-9_]+)", "\\$$1\\/text\\(\\)");
-                //groups.get(groupIdx).whereStats.add(addedText);
-                groups.get(groupIdx).whereStats.add(condition.getText());
+                //tables.get(tableIdx).whereStats.add(addedText);
+                tables.get(tableIdx).whereStats.add(condition.getText().replace("eq", " eq "));
             }
         }
 
@@ -167,16 +168,16 @@ class XQueryRewriter {
     }
 
     String output(){
-        if(groups.size() < 1){
+        if(tables.size() < 1){
             return "Can't peform join rewriting.";
         }
 
         String initFor = "for $tuple in ";
 
         //Most naive rewriting
-        String prevJoin = getGroupFWR(0);
+        String prevJoin = getTableFWR(tables.get(0));
 
-        for(int end = 1, size = groups.size() ; end < size ; end++){
+        for(int end = 1, size = tables.size() ; end < size ; end++){
             ArrayList<Pair<String, String>> merged = new ArrayList<>();
             for(int start = 0 ; start < end ; start++){
                 Pair<Integer, Integer> edge = Pair.mkPair(start, end);
@@ -187,7 +188,7 @@ class XQueryRewriter {
 
             String currentJoin = "join ( \n";
             currentJoin += prevJoin + ",\n";
-            currentJoin += getGroupFWR(end) + ",\n";
+            currentJoin += getTableFWR(tables.get(end)) + ",\n";
 
             String leftVars = "", rightVars = "";
             for(Pair<String, String> pairVars: merged){
@@ -210,11 +211,139 @@ class XQueryRewriter {
         return initFor + prevJoin + "\n" + finalReturnString;
     }
 
-    private String getGroupFWR(int group){
+
+    String output_better(){
+
+        if(tables.size() < 1){
+            return "Can't peform join rewriting.";
+        }
+
+        String initFor = "for $tuple in ";
+
+        //Union-find
+        ArrayList<Integer> groupIdx = new ArrayList<>();
+        for(int i = 0 , size = tables.size() ; i < size ; i++){
+            groupIdx.add(i);
+        }
+
+        for(Pair<Integer, Integer> edge: edgeToEqualPair.keySet()){
+            int left = edge.getV0(), right = edge.getV1();
+            if(qFind(groupIdx, left) != qFind(groupIdx, right)){
+                qUnion(groupIdx, left, right);
+            }
+
+        }
+
+        // Collect tables into groups.
+        // Tables are "connected" within each group, and are "disjointed" among groups.
+        HashMap<Integer, ArrayList<JoinTable>> tableToGroup = new HashMap<>();
+        for(int i = 0 , size = groupIdx.size() ; i < size ; i++){
+            int rootTableIdx = qFind(groupIdx, i);
+            if(!tableToGroup.containsKey(rootTableIdx)){
+                tableToGroup.put(rootTableIdx, new ArrayList<>());
+            }
+
+            tableToGroup.get(rootTableIdx).add(tables.get(i));
+        }
+
+        //Tables with less fields are considered smaller
+        ArrayList<ArrayList<JoinTable>> joinTables = new ArrayList<>();
+        joinTables.addAll(tableToGroup.values());
+        Collections.sort(joinTables, (o1, o2) -> {
+            // Count how many fields are there in each group.
+            int sumVars1 = 0, sumVars2 = 0;
+            for(JoinTable t : o1){
+                sumVars1 += t.vars.size();
+            }
+
+            for(JoinTable t : o2){
+                sumVars2 += t.vars.size();
+            }
+            return sumVars1 - sumVars2;
+        });
+
+        String totalJoin = "";
+        for (ArrayList<JoinTable> tableGroup : joinTables){
+            if(tableGroup.size()  == 0){
+                continue;
+            }
+
+            //Join the tables with most selection conditions first
+            Collections.sort(tableGroup, (o1, o2) -> o2.whereStats.size() - o1.whereStats.size());
+
+            String inGroupJoin = getTableFWR(tableGroup.get(0));
+
+            for(int end = 1 , size = tableGroup.size() ; end < size ; end++){
+                ArrayList<Pair<String, String>> mergedPairs = new ArrayList<>();
+                for(int start = 0 ; start < end ; start++){
+                    Pair<Integer, Integer> edge = Pair.mkPair(tableGroup.get(start).index, tableGroup.get(end).index);
+                    if(edgeToEqualPair.containsKey(edge)){
+                        mergedPairs.addAll(edgeToEqualPair.get(edge));
+                    }
+                }
+
+                inGroupJoin = getJoinStr(inGroupJoin, tableGroup.get(end), mergedPairs);
+            }
+
+            if(totalJoin.equals("")){
+                totalJoin = inGroupJoin;
+            }else{
+                //Join with empty arguments
+                totalJoin = "join (\n " + totalJoin + ",\n"
+                        + inGroupJoin + ", \n" + " [], [] ) \n";
+            }
+        }
+
+
+        return initFor + totalJoin + "\n" + finalReturnString;
+
+    }
+
+    private int qFind(ArrayList<Integer> groupIdx, int left){
+        ArrayList<Integer> path = new ArrayList<>();
+        while(groupIdx.get(left) != left){
+            path.add(left);
+            left = groupIdx.get(left);
+        }
+        for(int node : path){
+            groupIdx.set(node, left);
+        }
+        return left;
+    }
+
+    private void qUnion(ArrayList<Integer> groupIdx, int left, int right){
+        int leftRoot = qFind(groupIdx, left);
+        int rightRoot = qFind(groupIdx, right);
+        groupIdx.set(rightRoot, leftRoot);
+    }
+
+    private String getJoinStr(String prevJoin, JoinTable curTable, ArrayList<Pair<String, String>> mergedPairs){
+        String currentJoin = "join ( \n";
+        currentJoin += prevJoin + ",\n";
+        currentJoin += getTableFWR(curTable) + ",\n";
+
+        String leftVars = "", rightVars = "";
+        for(Pair<String, String> pairVars: mergedPairs){
+            leftVars += pairVars.getV0().substring(1) + ", ";
+            rightVars += pairVars.getV1().substring(1) + ", ";
+        }
+
+        // Remove last comma symbol.
+        if(leftVars.length() > 0){
+            leftVars = leftVars.substring(0, leftVars.length() - 2);
+            rightVars = rightVars.substring(0, rightVars.length() - 2);
+        }
+        currentJoin += "[" + leftVars + "], [" + rightVars + "]";
+        currentJoin += ")";
+
+        return currentJoin;
+    }
+
+    private String getTableFWR(JoinTable table){
 
         //Process FOR and Return
         String result = "for ", returnString = "";
-        ArrayList<Pair<String, String>> varStatements = groups.get(group).vars;
+        ArrayList<Pair<String, String>> varStatements = table.vars;
         for(Pair<String, String> entry : varStatements){
             String varName = entry.getV0();
             String varNoPrefix = varName.substring(1, varName.length());
@@ -229,7 +358,7 @@ class XQueryRewriter {
         returnString += "\n";
 
         //Add addition WHERE if exists
-        ArrayList<String> whereClauses = groups.get(group).whereStats;
+        ArrayList<String> whereClauses = table.whereStats;
         if(whereClauses.size() > 0){
             result += "where ";
             for(String entry : whereClauses){
@@ -240,6 +369,8 @@ class XQueryRewriter {
         result += "return <tuple> {" + returnString + "} </tuple>\n";
         return result;
     }
+
+
 }
 
 

@@ -255,6 +255,30 @@ public class XQueryLangBaseListener implements XQueryLangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStat_commaa(XQueryLangParser.Stat_commaaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStat_commaa(XQueryLangParser.Stat_commaaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSlashStat(XQueryLangParser.SlashStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSlashStat(XQueryLangParser.SlashStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStat_tag(XQueryLangParser.Stat_tagContext ctx) { }
 	/**
 	 * {@inheritDoc}

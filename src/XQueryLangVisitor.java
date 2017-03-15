@@ -146,6 +146,19 @@ public interface XQueryLangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAttName(XQueryLangParser.AttNameContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code stat_commaa}
+	 * labeled alternative in {@link XQueryLangParser#commaStat}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStat_commaa(XQueryLangParser.Stat_commaaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link XQueryLangParser#slashStat}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSlashStat(XQueryLangParser.SlashStatContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code stat_tag}
 	 * labeled alternative in {@link XQueryLangParser#statement}.
 	 * @param ctx the parse tree
