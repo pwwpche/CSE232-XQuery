@@ -95,14 +95,22 @@ attName
 //    | (Cond1) | Cond1 and Cond2 | Cond1 or Cond2 | not Cond1
 
 
+commaStat
+ : statement COMMA statement                                        #stat_commaa
+ ;
+
+slashStat
+ : statement LSLASH LSLASH? rp
+ ;
+
 statement
  : stringConstant                                                   #stat_constant
  | variable                                                         #stat_variable
  | ap                                                               #stat_ap
  | LESS tagName GREATER LBRACE statement RBRACE LESS LSLASH tagName GREATER       #stat_tag
  | LPAREN statement RPAREN                                          #stat_paren
- | statement COMMA statement                                        #stat_comma
  | statement LSLASH LSLASH? rp                                      #stat_slash
+ | statement COMMA statement                                        #stat_comma
  | forStatement                                                     #stat_for
  | letStatement                                                     #stat_let
  | joinStatement                                                    #stat_join
