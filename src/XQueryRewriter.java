@@ -214,7 +214,7 @@ class XQueryRewriter {
 
     String output_better(){
 
-        if(tables.size() < 1){
+        if(tables.size() < 2){
             return "Can't peform join rewriting.";
         }
 
