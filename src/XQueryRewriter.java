@@ -246,7 +246,7 @@ class XQueryRewriter {
             tableToGroup.get(rootTableIdx).add(tables.get(i));
         }
 
-        //Tables with less fields are considered smaller
+        //Groups with less fields are considered smaller
         ArrayList<ArrayList<JoinTable>> joinTables = new ArrayList<>();
         joinTables.addAll(tableToGroup.values());
         Collections.sort(joinTables, (o1, o2) -> {
@@ -277,6 +277,10 @@ class XQueryRewriter {
                 ArrayList<Pair<String, String>> mergedPairs = new ArrayList<>();
                 for(int start = 0 ; start < end ; start++){
                     Pair<Integer, Integer> edge = Pair.mkPair(tableGroup.get(start).index, tableGroup.get(end).index);
+                    if(edge.getV0() > edge.getV1()){
+                        int v0 = edge.getV0(), v1 = edge.getV1();
+                        edge = Pair.mkPair(v1, v0);
+                    }
                     if(edgeToEqualPair.containsKey(edge)){
                         mergedPairs.addAll(edgeToEqualPair.get(edge));
                     }
