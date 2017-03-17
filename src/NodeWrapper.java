@@ -3,30 +3,45 @@
  */
 import org.w3c.dom.*;
 
-public class NodeWrapper{
-    private Node n;
+import java.util.ArrayList;
 
-    NodeWrapper(Node node){
-        n = node;
+public class NodeWrapper{
+    private ArrayList<Node> n;
+
+    NodeWrapper(){
+        n = new ArrayList<>();
     }
 
-    public Node getNode(){
+    ArrayList<Node> getNodes(){
         return n;
     }
-
     @Override
     public boolean equals(Object o){
         if (o == this) return true;
         if (!(o instanceof NodeWrapper)) {
             return false;
         }
+        NodeWrapper other = (NodeWrapper)o;
+        if(n.size() != other.getNodes().size()){
+            return false;
+        }
 
-        return n.getTextContent().hashCode() == ((NodeWrapper) o).getNode().getTextContent().hashCode();
+        for(int i = 0 , size = other.getNodes().size() ; i < size ; i++){
+            if(!n.get(i).getFirstChild().isEqualNode(other.getNodes().get(i).getFirstChild())){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public int hashCode(){
-        return n.getTextContent().hashCode();
+        String totStr = "";
+        for(Node node : n){
+            totStr += node.getFirstChild().getTextContent();
+        }
+        return totStr.hashCode();
     }
 
 }

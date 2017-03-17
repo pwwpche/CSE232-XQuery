@@ -269,23 +269,24 @@ class XQueryRewriter {
             }
 
             //Join the tables with most selection conditions first
-            Collections.sort(tableGroup, (o1, o2) -> o2.whereStats.size() - o1.whereStats.size());
+            Collections.sort(tableGroup, (o1, o2) -> o1.index - o2.index);
 
             String inGroupJoin = getTableFWR(tableGroup.get(0));
 
             for(int end = 1 , size = tableGroup.size() ; end < size ; end++){
                 ArrayList<Pair<String, String>> mergedPairs = new ArrayList<>();
                 for(int start = 0 ; start < end ; start++){
+
                     Pair<Integer, Integer> edge = Pair.mkPair(tableGroup.get(start).index, tableGroup.get(end).index);
                     if(edge.getV0() > edge.getV1()){
                         int v0 = edge.getV0(), v1 = edge.getV1();
                         edge = Pair.mkPair(v1, v0);
                     }
+
                     if(edgeToEqualPair.containsKey(edge)){
                         mergedPairs.addAll(edgeToEqualPair.get(edge));
                     }
                 }
-
                 inGroupJoin = getJoinStr(inGroupJoin, tableGroup.get(end), mergedPairs);
             }
 

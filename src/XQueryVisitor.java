@@ -13,12 +13,13 @@ import java.util.stream.Collectors;
  * Created by liuche on 1/16/17.
  * XQueryLang Visitor
  */
-class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
+class XQueryVisitor extends XQueryLangBaseVisitor<Value> {
 
 
     private Map<String, Value> mem = new HashMap<>();
     private Value results = Value.VOID;
     private Document newDoc;
+
     @Override
     public Value visitAp(XQueryLangParser.ApContext ctx) {
 
@@ -40,7 +41,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             results = new Value(next);
             this.visit(ctx.rp());
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -52,10 +53,10 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value prev = results;
         Set<Node> nextSet = new HashSet<>();
 
-        for(Node node : prev.asListNode()){
+        for (Node node : prev.asListNode()) {
             try {
-                nextSet.add( node.getParentNode().getParentNode());
-            }catch(Exception e){
+                nextSet.add(node.getParentNode().getParentNode());
+            } catch (Exception e) {
                 nextSet.add(node.getOwnerDocument());
             }
         }
@@ -74,10 +75,10 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value prev = results;
         Set<Node> nextSet = new HashSet<>();
 
-        for(Node node : prev.asListNode()){
+        for (Node node : prev.asListNode()) {
             try {
-                nextSet.add( node.getParentNode());
-            }catch(Exception e){
+                nextSet.add(node.getParentNode());
+            } catch (Exception e) {
                 nextSet.add(node.getOwnerDocument());
             }
         }
@@ -105,8 +106,8 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     public Value visitRp_text(XQueryLangParser.Rp_textContext ctx) {
         List<Node> prev = results.asListNode();
         List<Node> next = new ArrayList<>();
-        for(Node node : prev){
-            if(node.getNodeType() == Node.TEXT_NODE){
+        for (Node node : prev) {
+            if (node.getNodeType() == Node.TEXT_NODE) {
                 next.add(node);
             }
         }
@@ -119,10 +120,10 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
         List<Node> prev = results.asListNode();
         List<Node> next = new ArrayList<>();
-        for(Node node : prev){
-            if(node.getNodeType() == Node.ELEMENT_NODE){
+        for (Node node : prev) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                if(element.getTagName().equals(ctx.getText())){
+                if (element.getTagName().equals(ctx.getText())) {
                     next.add(element);
                 }
             }
@@ -139,7 +140,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         this.visit(ctx.rp());
         List<Node> prev = results.asListNode();
         List<Node> next = new ArrayList<>();
-        for(Node node : prev){
+        for (Node node : prev) {
             List<Node> prevVal = new ArrayList<>();
             prevVal.add(node);
 
@@ -149,7 +150,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
             results = new Value(newVal);
             Value ret = this.visit(ctx.filter());
             assert ret.isBoolean();
-            if(ret.asBoolean()){
+            if (ret.asBoolean()) {
                 next.add(node);
             }
         }
@@ -173,8 +174,8 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
         //For each node in previous result, get the attribute value.
         //TODO: Should we return result as pure string, or a new node node?
-        for(Node node : prev){
-            if(node.getNodeType() != Node.ELEMENT_NODE){
+        for (Node node : prev) {
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
             Element element = (Element) node;
@@ -200,7 +201,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     }
 
 
-    private List<Node> getDirectChildren(Node node){
+    private List<Node> getDirectChildren(Node node) {
         List<Node> prev = new ArrayList<>();
         List<Node> next = new ArrayList<>();
         prev.add(node);
@@ -209,12 +210,12 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     }
 
 
-    private Node getDirectChildrenByTagName(Node node, String tagName){
+    private Node getDirectChildrenByTagName(Node node, String tagName) {
         List<Node> prev = getDirectChildren(node);
         List<Node> res = new ArrayList<>();
-        for(Node child : prev){
-            if(child.getNodeType() == Node.ELEMENT_NODE){
-                if(((Element)child).getTagName().equals(tagName)){
+        for (Node child : prev) {
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                if (((Element) child).getTagName().equals(tagName)) {
                     res.add(child);
                 }
             }
@@ -223,41 +224,41 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         return res.get(0);
     }
 
-    private void getChildren(List<Node> prev, List<Node> next, int slashes){
+    private void getChildren(List<Node> prev, List<Node> next, int slashes) {
         Set<Node> nextSet = new HashSet<>();
-        for(Node node : prev){
-            if(slashes == 1){ //Immediate children
+        for (Node node : prev) {
+            if (slashes == 1) { //Immediate children
                 // Only visit immediate children
                 Node childNode = node.getFirstChild();
-                while( childNode !=null ){
+                while (childNode != null) {
                     nextSet.add(childNode);
                     childNode = childNode.getNextSibling();
                 }
-            }else{
+            } else {
                 //Get all the descendants, not including itself.
-                if(node.getNodeType() == Node.ELEMENT_NODE || node.getNodeType() == Node.DOCUMENT_NODE){
+                if (node.getNodeType() == Node.ELEMENT_NODE || node.getNodeType() == Node.DOCUMENT_NODE) {
                     //First add its own children
                     NodeList childs = node.getChildNodes();
-                    for(int i = 0 ; i < childs.getLength() ; i++){
+                    for (int i = 0; i < childs.getLength(); i++) {
                         nextSet.add(childs.item(i));
                     }
                     //Then add children's children.
 
-                    NodeList nodeList ;
-                    if(node.getNodeType() == Node.DOCUMENT_NODE){
+                    NodeList nodeList;
+                    if (node.getNodeType() == Node.DOCUMENT_NODE) {
                         nodeList = ((Document) node).getElementsByTagName("*");
-                    }else{
+                    } else {
                         nodeList = ((Element) node).getElementsByTagName("*");
                     }
-                    for(int i = 0 ; i < nodeList.getLength() ; i++){
+                    for (int i = 0; i < nodeList.getLength(); i++) {
                         NodeList childsList = nodeList.item(i).getChildNodes();
-                        for(int j = 0 ; j < childsList.getLength() ; j++){
+                        for (int j = 0; j < childsList.getLength(); j++) {
                             nextSet.add(childsList.item(j));
                         }
                     }
-                }else{
+                } else {
                     //TODO: Does a node other than ELEMENT_NODE have children?
-                    return ;
+                    return;
                 }
 
 
@@ -265,7 +266,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         }
         next.addAll(nextSet);
     }
-
 
 
     @Override
@@ -281,11 +281,11 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Set<Node> res1 = new HashSet<>(this.visit(ctx.rp(0)).asListNode());
         results = prev;
         Set<Node> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListNode());
-        boolean flag=false;
-        for (Node node1 : res1){
-            for (Node node2 : res2){
-                if (node1.isEqualNode(node2)){
-                    flag=true;
+        boolean flag = false;
+        for (Node node1 : res1) {
+            for (Node node2 : res2) {
+                if (node1.isEqualNode(node2)) {
+                    flag = true;
                     break;
                 }
             }
@@ -300,9 +300,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         boolean left = this.visit(ctx.filter(0)).asBoolean();
         results = prev;
         boolean right = this.visit(ctx.filter(1)).asBoolean();
-        if(ctx.op.getType() == XQueryLangParser.AND){
+        if (ctx.op.getType() == XQueryLangParser.AND) {
             results = new Value(left && right);
-        }else{
+        } else {
             results = new Value(left || right);
         }
         return results;
@@ -316,9 +316,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         results = prev;
         Set<Node> res2 = new HashSet<>(this.visit(ctx.rp(1)).asListNode());
         res1.retainAll(res2);
-        if(res1.size() > 0){
+        if (res1.size() > 0) {
             results = new Value(true);
-        }else{
+        } else {
             results = new Value(false);
         }
         return results;
@@ -362,7 +362,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     public Value visitStat_tag(XQueryLangParser.Stat_tagContext ctx) {
 
         String tagName = ctx.tagName(0).getText();
-        if(!tagName.equals(ctx.tagName(1).getText().replace("/", ""))){
+        if (!tagName.equals(ctx.tagName(1).getText().replace("/", ""))) {
             throw new RuntimeException("Invalid tag name");
         }
         Value res = this.visit(ctx.statement());
@@ -371,7 +371,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
         List<Node> result = new ArrayList<>();
 
-        for(Node node : res.asListNode()){
+        for (Node node : res.asListNode()) {
             assert newNode != null;
             Node importedNode = newDoc.importNode(node, true);
             newNode.appendChild(importedNode);
@@ -412,7 +412,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     public Value visitStat_variable(XQueryLangParser.Stat_variableContext ctx) {
         String id = ctx.getText();
         Value value = mem.get(id);
-        if(value == null) {
+        if (value == null) {
             throw new RuntimeException("no such variable: " + id);
         }
         results = value;
@@ -444,123 +444,94 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
         List<Node> result = new ArrayList<>();
         results = new Value(result);
-        Map<NodeWrapper, ArrayList<Node>> candidates;
+        Map<NodeWrapper, ArrayList<Node>> candidates = new HashMap<>();
 
         //No join equations, so just do cartesian product.
-        if(leftVars.size() == 0 || rightVars.size() == 0){
-            for(Node leftNode : nextLeft){
+        if (leftVars.size() == 0 || rightVars.size() == 0) {
+            for (Node leftNode : nextLeft) {
                 List<Node> leftChildren = getDirectChildren(leftNode);
-                for(Node rightNode : nextRight){
+                for (Node rightNode : nextRight) {
                     List<Node> rightChildren = getDirectChildren(rightNode);
                     Element element = createElement("tuple");
                     assert element != null;
 
-                    for(Node leftChild : leftChildren){
+                    for (Node leftChild : leftChildren) {
                         Node child = leftChild.cloneNode(true);
                         element.appendChild(child);
                     }
-                    for(Node rightChild : rightChildren){
+                    for (Node rightChild : rightChildren) {
                         Node child = rightChild.cloneNode(true);
                         element.appendChild(child);
                     }
                     result.add(element);
                 }
             }
+            results = new Value(result);
+            return results;
         }
 
-        for(int i = 0 , size = (leftVars.size() < rightVars.size() ? leftVars.size() : rightVars.size());
-                i < size ; i++){
 
-            String tagLeft = leftVars.get(i);
-            String tagRight = rightVars.get(i);
-            Set<Node> tempLeft = new HashSet<>();
-            Set<Node> tempRight = new HashSet<>();
-            // Construct candidate set of right
-            // All nodes in this set has a child node with tag `tagRight`
-            candidates = new HashMap<>();
-            for(Node rightNode : nextRight){
-                //Get all children of this node.
-                List<Node> rightChilds = getDirectChildren(rightNode);
+        for (Node rightNode : nextRight) {
+            //Get all children of this node.
+            List<Node> rightChilds = getDirectChildren(rightNode);
+            NodeWrapper nodeWrapper = new NodeWrapper();
 
-                //Look for the element with current tag name
-                for(Node rightChild : rightChilds){
-                    if(rightChild.getNodeType() == Node.ELEMENT_NODE &&
-                            ((Element)rightChild).getTagName().equals(tagRight)){
-                        NodeWrapper nodeWrapper = new NodeWrapper(rightChild);
-                        if(!candidates.containsKey(nodeWrapper)){
-                            candidates.put(nodeWrapper, new ArrayList<>());
-                        }
-                        candidates.get(nodeWrapper).add(rightNode);
+            //Look for the element with current tag name
+            for (int i = 0, size = (leftVars.size() < rightVars.size() ? leftVars.size() : rightVars.size());
+                 i < size; i++) {
+                for (Node rightChild : rightChilds) {
+                    String tagRight = rightVars.get(i);
+                    if (rightChild.getNodeType() == Node.ELEMENT_NODE &&
+                            ((Element) rightChild).getTagName().equals(tagRight)) {
+                        nodeWrapper.getNodes().add(rightChild);
+                        break;
+                    }
+                }
+            }
+            if (!candidates.containsKey(nodeWrapper)) {
+                candidates.put(nodeWrapper, new ArrayList<>());
+            }
+            candidates.get(nodeWrapper).add(rightNode);
+        }
+
+        for (Node leftNode : nextLeft) {
+            NodeWrapper leftWrapper = new NodeWrapper();
+            List<Node> leftChilds = getDirectChildren(leftNode);
+            for (int i = 0, size = (leftVars.size() < rightVars.size() ? leftVars.size() : rightVars.size());
+                 i < size; i++) {
+                for (Node leftChild : leftChilds) {
+                    String tagLeft = leftVars.get(i);
+                    if (leftChild.getNodeType() == Node.ELEMENT_NODE &&
+                            ((Element) leftChild).getTagName().equals(tagLeft)) {
+                        leftWrapper.getNodes().add(leftChild);
                         break;
                     }
                 }
             }
 
-            // Scan left one by one
-            // If left has a children that is in set<right> :
-            //    add left and right to candidate for next loop
-            for(Node leftNode : nextLeft){
-                //Get all children of this node.
-                List<Node> leftChilds = getDirectChildren(leftNode);
+            if (candidates.containsKey(leftWrapper)) {
+                ArrayList<Node> candidatesRight = candidates.get(leftWrapper);
 
-                //Look for the element with current tag name
-                for(Node leftChild : leftChilds){
-                    if(leftChild.getNodeType() == Node.ELEMENT_NODE &&
-                            ((Element)leftChild).getTagName().equals(tagLeft)){
-
-                        NodeWrapper leftWrapper = new NodeWrapper(leftChild);
-                        if(candidates.containsKey(leftWrapper)){
-                            tempLeft.add(leftNode);
-                            ArrayList<Node> candidatesRight = candidates.get(leftWrapper);
-                            ArrayList<Node> equalRight = new ArrayList<>();
-
-                            for(Node node : candidatesRight){
-                                Node leftContent = leftChild.getFirstChild();
-                                Node rightContent = getDirectChildrenByTagName(node, tagRight).getFirstChild();
-                                if(leftContent.isEqualNode(rightContent)){
-                                    equalRight.add(node);
-                                }
-                            }
-
-                            if(i == size - 1){
-
-                                for(Node tempRightNode : equalRight){
-                                    Element element = createElement("tuple");
-                                    assert element != null;
-                                    List<Node> resLeftChild = getDirectChildren(leftNode);
-                                    for (Node resNode : resLeftChild){
-                                        Node newNode = resNode.cloneNode(true);
-                                        element.appendChild(newNode);
-                                    }
-                                    List<Node> resRightChild = getDirectChildren(tempRightNode);
-                                    for (Node resNode : resRightChild){
-                                        Node newNode = resNode.cloneNode(true);
-                                        element.appendChild(newNode);
-                                    }
-                                    result.add(element);
-                                }
-                            }
-                            tempRight.addAll(equalRight);
-                            break;
-                        }
+                for (Node tempRightNode : candidatesRight) {
+                    Element element = createElement("tuple");
+                    assert element != null;
+                    List<Node> resLeftChild = getDirectChildren(leftNode);
+                    for (Node resNode : resLeftChild) {
+                        Node newNode = resNode.cloneNode(true);
+                        element.appendChild(newNode);
                     }
+                    List<Node> resRightChild = getDirectChildren(tempRightNode);
+                    for (Node resNode : resRightChild) {
+                        Node newNode = resNode.cloneNode(true);
+                        element.appendChild(newNode);
+                    }
+                    result.add(element);
+
                 }
-
-
-            }
-            nextLeft = tempLeft;
-            nextRight = tempRight;
-
-            //Produce result in the last iteration.
-
-            if(i == size - 1){
-                results = new Value(result);
             }
         }
-
+        results = new Value(result);
         return results;
-
-
     }
 
     @Override
@@ -633,28 +604,28 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     }
 
 
-    private void forStatementDFS(XQueryLangParser.ForClauseContext ctx, int varIdx, List<Node> finalResult){
+    private void forStatementDFS(XQueryLangParser.ForClauseContext ctx, int varIdx, List<Node> finalResult) {
         // Treat this as a tree.
-        if(varIdx >= ctx.variable().size()){     //All the variables have already been set, do the processing work.
-            XQueryLangParser.ForStatementContext parentCtx = (XQueryLangParser.ForStatementContext)ctx.getParent();
-            if(parentCtx.letClause() != null){
+        if (varIdx >= ctx.variable().size()) {     //All the variables have already been set, do the processing work.
+            XQueryLangParser.ForStatementContext parentCtx = (XQueryLangParser.ForStatementContext) ctx.getParent();
+            if (parentCtx.letClause() != null) {
                 this.visit(parentCtx.letClause());
             }
 
-            if(parentCtx.whereClause() != null){
+            if (parentCtx.whereClause() != null) {
                 Value res = this.visit(parentCtx.whereClause());
                 assert res.isBoolean();
-                if(!res.asBoolean()){
-                    return ;
+                if (!res.asBoolean()) {
+                    return;
                 }
 
             }
             Value returnResult = this.visit(parentCtx.returnClause());
             finalResult.addAll(returnResult.asListNode());
-        }else{                                  // Set up variables before processing.
+        } else {                                  // Set up variables before processing.
             String variable = ctx.variable(varIdx).getText();
             Value value = this.visit(ctx.statement(varIdx));
-            for(Node node : value.asListNode()){
+            for (Node node : value.asListNode()) {
                 List<Node> elemList = new ArrayList<>();
                 elemList.add(node);
                 mem.put(variable, new Value(elemList));
@@ -663,7 +634,6 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         }
 
     }
-
 
 
     @Override
@@ -676,7 +646,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Value prev = results;
         List<String> variables = new ArrayList<>();
         List<Value> values = new ArrayList<>();
-        for(int i = 0 ; i < ctx.variable().size() ; i++){
+        for (int i = 0; i < ctx.variable().size(); i++) {
             results = prev;
             String varName = ctx.variable(i).getText();
             Value value = this.visit(ctx.statement(i));
@@ -719,20 +689,19 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         Set<Node> res1 = new HashSet<>(this.visit(ctx.statement(0)).asListNode());
         results = prev;
         Set<Node> res2 = new HashSet<>(this.visit(ctx.statement(1)).asListNode());
-        boolean flag=false;
-        for (Node node1 : res1){
-            for (Node node2 : res2){
-                if(node1.getTextContent().equals("MARULLUS") && node2.getTextContent().equals("MARULLUS")){
+        boolean flag = false;
+        for (Node node1 : res1) {
+            for (Node node2 : res2) {
+                if (node1.getTextContent().equals("MARULLUS") && node2.getTextContent().equals("MARULLUS")) {
                     flag = true;
                 }
-                if (node1.getNodeType() == Node.TEXT_NODE && node2.getNodeType() == Node.TEXT_NODE){
-                    if (node1.getTextContent().equals(node2.getTextContent())){
-                        flag= true;
+                if (node1.getNodeType() == Node.TEXT_NODE && node2.getNodeType() == Node.TEXT_NODE) {
+                    if (node1.getTextContent().equals(node2.getTextContent())) {
+                        flag = true;
                         break;
                     }
-                }
-                else if (node1.isEqualNode(node2)){
-                    flag=true;
+                } else if (node1.isEqualNode(node2)) {
+                    flag = true;
                     break;
                 }
             }
@@ -750,9 +719,9 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         results = prev;
         Set<Node> res2 = new HashSet<>(this.visit(ctx.statement(1)).asListNode());
         res1.retainAll(res2);
-        if(res1.size() > 0){
+        if (res1.size() > 0) {
             results = new Value(true);
-        }else{
+        } else {
             results = new Value(false);
         }
 
@@ -774,23 +743,23 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
     }
 
 
-    private boolean someClauseDFS(XQueryLangParser.Cond_someContext ctx, int varIdx){
+    private boolean someClauseDFS(XQueryLangParser.Cond_someContext ctx, int varIdx) {
         // Treat this as a tree.
 
-        if(varIdx >= ctx.variable().size()){     //All the variables have already been set, do the processing work.
+        if (varIdx >= ctx.variable().size()) {     //All the variables have already been set, do the processing work.
             results = Value.VOID;
             Value val = this.visit(ctx.condition());
             assert val.isBoolean();
             return val.asBoolean();
-        }else{                                  // Set up variables before processing.
+        } else {                                  // Set up variables before processing.
             String variable = ctx.variable(varIdx).getText();
             Value value = this.visit(ctx.statement(varIdx));
-            for(Node node : value.asListNode()){
+            for (Node node : value.asListNode()) {
                 List<Node> nodeList = new ArrayList<>();
                 nodeList.add(node);
                 mem.put(variable, new Value(nodeList));
                 boolean res = someClauseDFS(ctx, varIdx + 1);
-                if(res){
+                if (res) {
                     return true;
                 }
             }
@@ -801,7 +770,7 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
 
     @Override
     public Value visitCond_not(XQueryLangParser.Cond_notContext ctx) {
-        assert(results.isBoolean());
+        assert (results.isBoolean());
         results = this.visit(ctx.condition());
         results = new Value(!results.asBoolean());
         return results;
@@ -814,17 +783,17 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         results = prevResult;
         Value right = this.visit(ctx.condition(1));
 
-        assert(left.isBoolean() && right.isBoolean());
+        assert (left.isBoolean() && right.isBoolean());
         results = new Value(left.asBoolean() || right.asBoolean());
         return results;
     }
 
     @Override
     public Value visitVariable(XQueryLangParser.VariableContext ctx) {
-        if(mem.containsKey(ctx.getText())){
+        if (mem.containsKey(ctx.getText())) {
             results = mem.get(ctx.getText());
             return results;
-        }else{
+        } else {
             throw new RuntimeException("Variable " + ctx.getText() + " is not in scope.");
         }
     }
@@ -897,41 +866,41 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         super.finalize();
     }
 
-    private List<String> getVariables(XQueryLangParser.Cond_someContext ctx){
-        if(ctx != null){
+    private List<String> getVariables(XQueryLangParser.Cond_someContext ctx) {
+        if (ctx != null) {
             return ctx.variable().stream().map(RuleContext::getText).collect(Collectors.toList());
-        }else{
+        } else {
             return new ArrayList<>();
         }
     }
 
-    private List<String> getVariables(XQueryLangParser.LetClauseContext ctx){
-        if(ctx != null){
+    private List<String> getVariables(XQueryLangParser.LetClauseContext ctx) {
+        if (ctx != null) {
             return ctx.variable().stream().map(RuleContext::getText).collect(Collectors.toList());
-        }else{
+        } else {
             return new ArrayList<>();
         }
     }
 
-    private List<String> getVariables(XQueryLangParser.ForClauseContext ctx){
-        if(ctx != null){
+    private List<String> getVariables(XQueryLangParser.ForClauseContext ctx) {
+        if (ctx != null) {
             return ctx.variable().stream().map(RuleContext::getText).collect(Collectors.toList());
-        }else{
+        } else {
             return new ArrayList<>();
         }
     }
 
-    private void addVariable(List<String> variables, List<Value> values){
-        assert(variables.size() == values.size());
+    private void addVariable(List<String> variables, List<Value> values) {
+        assert (variables.size() == values.size());
         int size = values.size();
-        for(int i = 0 ; i < size ; i++){
+        for (int i = 0; i < size; i++) {
             mem.put(variables.get(i), values.get(i));
         }
 
     }
 
-    private Element createElement(String name){
-        if(newDoc != null){
+    private Element createElement(String name) {
+        if (newDoc != null) {
             return newDoc.createElement(name);
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -943,8 +912,8 @@ class XQueryVisitor extends XQueryLangBaseVisitor<Value>{
         }
     }
 
-    private Node createTextNode(String str){
-        if(newDoc != null){
+    private Node createTextNode(String str) {
+        if (newDoc != null) {
             return newDoc.createTextNode(str);
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
